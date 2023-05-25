@@ -15,7 +15,7 @@ fun StringBuilder.addWhere(list: List<String>): StringBuilder {
         append(list.first())
     if (list.size > 1) {
         list.forEachIndexed { index, str ->
-            if (index != 0) {
+            if (index != 0 && str.isNotEmpty()) {
                 append(" AND ")
                 append(str)
             }
@@ -45,4 +45,15 @@ fun StringBuilder.addOrderBy(list: List<String>): StringBuilder {
 
 fun addWhere(list: List<String>): String {
     return buildString { addWhere(list) }.toString()
+}
+
+fun StringBuilder.addJoins(list: List<String>): StringBuilder {
+    list.forEach {
+        append(" $it ")
+    }
+    return this
+}
+
+fun addJoins(list: List<String>): String {
+    return buildString { addJoins(list) }.toString()
 }

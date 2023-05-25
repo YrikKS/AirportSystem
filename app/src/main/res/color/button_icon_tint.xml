@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:color="@color/second_theme_color_2" android:state_enabled="false" />
+    <item android:color="@color/second_theme_color_2" app:state_indeterminate="true" />
+    <item android:color="@color/second_theme_color_2" app:state_error="true" />
+    <item android:color="@color/second_theme_color_2" android:state_checked="true" />
+</selector>

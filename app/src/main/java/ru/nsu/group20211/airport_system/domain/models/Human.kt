@@ -1,35 +1,50 @@
 package ru.nsu.group20211.airport_system.domain.models
 
+import android.os.Parcelable
 import entity.addQuo
+import kotlinx.parcelize.Parcelize
 import java.sql.Date
 import java.sql.ResultSet
 import java.util.Calendar
 import kotlin.reflect.KClass
 
+@Parcelize
 data class Human(
     var id: Int = 0,
     var name: String = "",
     var surname: String = "",
     var patronymic: String? = null,
     var sex: Char = 'M',
-    var dateOfBirth: Date = Date(Calendar.getInstance().time.time),
+    var dateOfBirth: Date? = Date(Calendar.getInstance().time.time),
     var countChildren: Int = 0,
-) : DbEntity {
+) : DbEntity, Parcelable {
 
+    override fun customGetId(): Int {
+        return id
+    }
+
+    override fun myEquals(other: Any): Boolean {
+        return this == other
+    }
 
     override fun insertQuery() = buildString {
         append("INSERT INTO ${getTableName()} ")
-        append("""("name", "surname", "pyrtonymic", "sex", "dateOfBirth", "countChildren") VALUES (""")
-        append(
-            """'${name}', '${surname}', '${patronymic}', '${sex}', TO_DATE('${dateOfBirth}', 'YYYY:MM:DD'), ${countChildren}); """
-        )
+        if (dateOfBirth != null) {
+            append("""("name", "surname", "patronymic", "sex", "dateOfBirth", "countChildren") VALUES (""")
+        } else {
+            append("""("name", "surname", "patronymic", "sex", "countChildren") VALUES (""")
+        }
+        append("""'${name}', '${surname}', '${patronymic}', '${sex}', """)
+        if (dateOfBirth != null)
+            append("""TO_DATE('${dateOfBirth}', 'YYYY-MM-DD'), """)
+        append("""${countChildren})""")
     }
 
     override fun deleteQuery() = buildString {
         append("DELETE FROM ")
         append(getTableName())
         append(" ")
-        append("WHERE \"id\" = ${id};")
+        append("WHERE \"id\" = ${id}")
     }
 
     override fun updateQuery() = buildString {
@@ -40,9 +55,10 @@ data class Human(
         append(""" "surname" = '$surname', """)
         append(""" "patronymic" = '$patronymic', """)
         append(""" "sex" = '$sex',  """)
-        append(""" "dateOfBirth" = TO_DATE('${dateOfBirth}', 'YYYY:MM:DD'),  """)
+        if (dateOfBirth != null)
+            append(""" "dateOfBirth" = TO_DATE('${dateOfBirth}', 'YYYY-MM-DD'),  """)
         append(""" "countChildren" = $countChildren  """)
-        append(""" WHERE "id" = $id; """)
+        append(""" WHERE "id" = $id """)
     }
 
     companion object : DbEntityCompanion<Human> {
@@ -51,6 +67,9 @@ data class Human(
         override fun getAll() = buildString {
             append("SELECT * FROM ${getTableName()} ")
         }
+
+
+        fun getById(id: Int) = "SELECT * FROM ${getTableName()} WHERE \"id\" = $id "
 
         override fun ResultSet.getInstance(
             indexStart: Int,
@@ -80,3 +99,5 @@ data class Human(
         }
     }
 }
+
+fun human(block: Human.() -> Unit) = Human().apply(block)

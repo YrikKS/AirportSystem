@@ -1,30 +1,40 @@
 package ru.nsu.group20211.airport_system.domain.models
 
 import entity.addQuo
+import java.sql.Date
 import java.sql.ResultSet
-import java.sql.Timestamp
 import kotlin.reflect.KClass
 
 data class Employee(
     var id: Int = 0,
     var idBrigade: Int = 0,
-    var dateOfEmployment: Timestamp? = null,
+    var dateOfEmployment: Date? = null,
     var humanId: Int = 0,
-    var salary: Float = 0f
+    var salary: Float = 0f,
+
+    var human: Human? = null,
+    var brigade: Brigade? = null
 ) : DbEntity {
+    override fun customGetId(): Int {
+        return id
+    }
+
+    override fun myEquals(other: Any): Boolean {
+        return this == other
+    }
 
 
     override fun insertQuery() = buildString {
         append("INSERT INTO ${getTableName()} ")
         append("""("idHuman", "idBrigade", "dateOfEmployment", "salary") VALUES (""")
-        append("""$humanId, $idBrigade, TO_DATE('${dateOfEmployment}', 'YYYY-MM-DD'), $salary);""")
+        append("""$humanId, $idBrigade, TO_DATE('${dateOfEmployment}', 'YYYY-MM-DD'), $salary)""")
     }
 
     override fun deleteQuery() = buildString {
         append("DELETE FROM ")
         append("employees".addQuo())
         append(" ")
-        append(" WHERE \"id\" = ${id}; ")
+        append(" WHERE \"id\" = ${id} ")
     }
 
     override fun updateQuery() = buildString {
@@ -32,10 +42,10 @@ data class Employee(
         append("employees".addQuo())
         append(" SET ")
         append(""" "idBrigade" = $idBrigade,  """)
-        append(""" "dateOfEmployment" = $dateOfEmployment,  """)
-        append(""" "humanId" = $humanId,  """)
+        append(""" "dateOfEmployment" = TO_DATE('$dateOfEmployment', 'YYYY-MM-DD'),  """)
+        append(""" "idHuman" = $humanId,  """)
         append(""" "salary" = $salary  """)
-        append(""" WHERE "id" = $id; """)
+        append(""" WHERE "id" = $id """)
     }
 
     companion object : DbEntityCompanion<Employee> {
@@ -52,7 +62,7 @@ data class Employee(
             return Employee(
                 id = getInt(indexStart),
                 idBrigade = getInt(indexStart + 1),
-                dateOfEmployment = getTimestamp(indexStart + 2),
+                dateOfEmployment = getDate(indexStart + 2),
                 humanId = getInt(indexStart + 3),
                 salary = getFloat(indexStart + 4)
             ) to indexStart + 5

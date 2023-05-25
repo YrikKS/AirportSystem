@@ -3,13 +3,16 @@ package ru.nsu.group20211.airport_system.domain.models
 import java.sql.ResultSet
 import kotlin.reflect.KClass
 
-interface DbEntity {
+interface DbEntity  {
+    fun customGetId() : Int
 
     fun insertQuery(): String
 
     fun deleteQuery(): String
 
     fun updateQuery(): String
+
+    fun myEquals(other: Any) : Boolean
 }
 
 interface DbEntityCompanion<T : DbEntity> {
