@@ -18,7 +18,7 @@
             style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Brigade" />
+            android:text="Employee class" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/button_side"

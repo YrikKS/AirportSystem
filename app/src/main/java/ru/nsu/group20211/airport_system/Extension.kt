@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.nsu.group20211.airport_system.domain.models.DbEntity
+import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airportsystem.databinding.DialogInflatorBinding
 import ru.nsu.group20211.airportsystem.databinding.SideDialogParametrsInflatorBinding
 import java.sql.Date
@@ -71,6 +71,28 @@ fun LinearLayoutCompat.addInsertTextField(
                 it.textInputLayout.hint = data.first
                 it.inputText.addTextChangedListener { text ->
                     data.second(text.toString() ?: "")
+                }
+                it.root
+            }
+        )
+    }
+}
+
+fun LinearLayoutCompat.addInsertPickFieldFromList(
+    paramsPick: List<Triple<String, (String) -> Unit, List<String>>>,
+    context: Context
+) {
+    paramsPick.forEach { data ->
+        addView(
+            DialogInflatorBinding.inflate(
+                LayoutInflater.from(context),
+            ).let {
+                it.layoutExposed.isVisible = true
+                it.layoutExposed.hint = data.first
+                val listItems = data.third
+                it.textExposed.setItems(listItems.toTypedArray())
+                it.textExposed.setOnItemClickListener { parent, view, position, id ->
+                    data.second(listItems[id.toInt()])
                 }
                 it.root
             }
@@ -173,6 +195,29 @@ fun LinearLayoutCompat.addUpdatePickField(
                     }
                 }
                 it.textExposed.setText(data.first.second)
+                it.root
+            }
+        )
+    }
+}
+
+fun LinearLayoutCompat.addUpdatePickFieldFromList(
+    paramsPick: List<Triple<Pair<String, String>, (String) -> Unit, List<String>>>,
+    context: Context
+) {
+    paramsPick.forEach { data ->
+        addView(
+            DialogInflatorBinding.inflate(
+                LayoutInflater.from(context),
+            ).let {
+                it.layoutExposed.isVisible = true
+                it.layoutExposed.hint = data.first.first
+                it.textExposed.setText(data.first.second)
+                val listItems = data.third
+                it.textExposed.setItems(listItems.toTypedArray())
+                it.textExposed.setOnItemClickListener { parent, view, position, id ->
+                    data.second(listItems[id.toInt()])
+                }
                 it.root
             }
         )

@@ -19,8 +19,8 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ru.nsu.group20211.airport_system.appComponent
-import ru.nsu.group20211.airport_system.domain.models.Human
-import ru.nsu.group20211.airport_system.domain.models.human
+import ru.nsu.group20211.airport_system.domain.employee.models.Human
+import ru.nsu.group20211.airport_system.domain.employee.models.human
 import ru.nsu.group20211.airport_system.presentation.SpaceItemDecorator
 import ru.nsu.group20211.airport_system.setItems
 import ru.nsu.group20211.airportsystem.R

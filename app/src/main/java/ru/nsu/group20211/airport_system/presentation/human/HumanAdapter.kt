@@ -3,7 +3,7 @@ package ru.nsu.group20211.airport_system.presentation.human
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.nsu.group20211.airport_system.domain.models.Human
+import ru.nsu.group20211.airport_system.domain.employee.models.Human
 import ru.nsu.group20211.airportsystem.databinding.ListItemHumanBinding
 
 class HumanAdapter(var list: List<Human>, var cliclListner: (Human) -> Unit) :

@@ -7,7 +7,9 @@ import ru.nsu.group20211.airport_system.MainActivity
 import ru.nsu.group20211.airport_system.di.app_module.AppModule
 import ru.nsu.group20211.airport_system.di.app_module.UserModule
 import ru.nsu.group20211.airport_system.di.view_models.ViewModelModule
+import ru.nsu.group20211.airport_system.presentation.brigades.BrigadeFragment
 import ru.nsu.group20211.airport_system.presentation.employee.EmployeeFragment
+import ru.nsu.group20211.airport_system.presentation.employee_class.EmployeeClassFragment
 import ru.nsu.group20211.airport_system.presentation.human.HumanFragment
 import javax.inject.Singleton
 
@@ -22,7 +24,9 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(target: EmployeeFragment)
     fun inject(target: MainActivity)
+    fun inject(target: BrigadeFragment)
     fun inject(target: HumanFragment)
+    fun inject(target: EmployeeClassFragment)
 
     @Component.Factory
     interface Factory {

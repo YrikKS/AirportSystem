@@ -28,10 +28,10 @@ import ru.nsu.group20211.airport_system.addUpdateButton
 import ru.nsu.group20211.airport_system.addUpdatePickField
 import ru.nsu.group20211.airport_system.addUpdateTextField
 import ru.nsu.group20211.airport_system.appComponent
-import ru.nsu.group20211.airport_system.domain.models.Brigade
-import ru.nsu.group20211.airport_system.domain.models.DbEntity
-import ru.nsu.group20211.airport_system.domain.models.Employee
-import ru.nsu.group20211.airport_system.domain.models.Human
+import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
+import ru.nsu.group20211.airport_system.domain.DbEntity
+import ru.nsu.group20211.airport_system.domain.employee.models.Employee
+import ru.nsu.group20211.airport_system.domain.employee.models.Human
 import ru.nsu.group20211.airport_system.presentation.SpaceItemDecorator
 import ru.nsu.group20211.airportsystem.R
 import ru.nsu.group20211.airportsystem.databinding.BottomDialogBinding
