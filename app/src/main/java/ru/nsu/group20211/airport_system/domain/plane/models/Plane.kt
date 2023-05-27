@@ -8,12 +8,12 @@ import java.sql.ResultSet
 import kotlin.reflect.KClass
 
 data class Plane(
-    val id: Int = 0,
-    val model: Int = 0,
-    val numberPassengerSeats: Int = 0,
-    val dateCreation: Date,
+    var id: Int = 0,
+    var model: Int = 0,
+    var numberPassengerSeats: Int = 0,
+    var dateCreation: Date? = null,
 
-    val modelPlane: ModelPlane? = null,
+    var modelPlane: ModelPlane? = null,
 ) : DbEntity {
     override fun customGetId(): Int {
         return id
@@ -22,21 +22,30 @@ data class Plane(
     override fun insertQuery(): String {
         return buildString {
             append(""" INSERT INTO ${getTableName()}( """)
-            append(""" "id", "model", "numberPassengerSeats", "dateCreation") """)
-            append(""" VALUES ($id, $model, $numberPassengerSeats, TO_DATE('$dateCreation', 'YYYY-MM-DD')) """)
+            if (dateCreation == null) {
+                append(""" "id", "model", "numberPassengerSeats") """)
+            } else {
+                append(""" "id", "model", "numberPassengerSeats", "dateCreation") """)
+            }
+            if (dateCreation == null) {
+                append(""" VALUES ($id, $model, $numberPassengerSeats) """)
+            } else {
+                append(""" VALUES ($id, $model, $numberPassengerSeats, TO_DATE('$dateCreation', 'YYYY-MM-DD')) """)
+            }
         }
     }
 
     override fun deleteQuery(): String {
-        return """ DELETE FROM ${getTableName()} WHERE "id" = $id; """
+        return """ DELETE FROM ${getTableName()} WHERE "id" = $id """
     }
 
     override fun updateQuery(): String {
         return buildString {
             append(""" UPDATE ${getTableName()} SET  """)
             append(""" "model" = $model, """)
-            append(""" "numberPassengerSeats" = $numberPassengerSeats, """)
-            append(""" "dateCreation" = TO_DATE('$dateCreation', 'YYYY-MM-DD') """)
+            append(""" "numberPassengerSeats" = $numberPassengerSeats """)
+            if (dateCreation != null)
+                append(""", "dateCreation" = TO_DATE('$dateCreation', 'YYYY-MM-DD') """)
             append(""" WHERE "id" = $id """)
         }
     }

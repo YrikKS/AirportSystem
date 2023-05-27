@@ -25,7 +25,7 @@ class DepartmentRepository @Inject constructor(
     ): List<Department> {
         val listResult = mutableListOf<Department>()
         val joinList = listOf(
-            """LEFT JOIN ${EmployeeClass.Administrator.getTableName()} ON (${EmployeeClass.Administrator.getTableName()}."id" = ${Human.getTableName()}."idBoss") """,
+            """LEFT JOIN ${EmployeeClass.Administrator.getTableName()} ON (${EmployeeClass.Administrator.getTableName()}."id" = ${Department.getTableName()}."idBoss") """,
             """LEFT JOIN ${Employee.getTableName()} ON (${Employee.getTableName()}."id" = ${EmployeeClass.Administrator.getTableName()}."employee") """,
             """LEFT JOIN ${Human.getTableName()} ON ( ${Human.getTableName()}."id" = ${Employee.getTableName()}."idHuman") """
         )
@@ -51,5 +51,27 @@ class DepartmentRepository @Inject constructor(
             }
         }
         return listResult
+    }
+
+
+    suspend fun getAdministrators(): List<EmployeeClass.Administrator> {
+        val listResult = mutableListOf<EmployeeClass.Administrator>()
+        val joinList = listOf(
+            """LEFT JOIN ${Employee.getTableName()} ON (${Employee.getTableName()}."id" = "employee") """,
+            """LEFT JOIN ${Human.getTableName()} ON ( ${Human.getTableName()}."id" = ${Employee.getTableName()}."idHuman") """
+        )
+        return dbContainer.connect().use {
+            val result =
+                it.executeQuery((EmployeeClass.Administrator.getAll() + addJoins(joinList)).log())
+            while (result.next()) {
+                val (classEmployee, index) = result.getInstance(clazz = EmployeeClass.Administrator::class)
+                val (employee, index_2) = result.getInstance(index, clazz = Employee::class)
+                val (human, index_3) = result.getInstance(index_2, clazz = Human::class)
+                classEmployee.employeeEntity = employee
+                classEmployee.employeeEntity?.human = human
+                listResult.add(classEmployee)
+            }
+            listResult
+        }
     }
 }

@@ -17,6 +17,7 @@ import ru.nsu.group20211.airportsystem.databinding.SideDialogParametrsInflatorBi
 import java.sql.Date
 import java.sql.ResultSet
 import java.sql.Statement
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
 inline fun <R> runCatchingNonCancellation(block: () -> R): Result<R> {
@@ -57,6 +58,13 @@ fun getTimeFrom(string: String): Date? {
     }
 }
 
+fun getTimestampFrom(string: String): Timestamp? {
+    return try {
+        Timestamp.valueOf(string)
+    } catch (ex: Exception) {
+        null
+    }
+}
 
 fun LinearLayoutCompat.addInsertTextField(
     paramsText: List<Pair<String, (String) -> Unit>>,

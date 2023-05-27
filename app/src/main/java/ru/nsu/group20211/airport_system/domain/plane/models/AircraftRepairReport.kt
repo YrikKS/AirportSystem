@@ -3,6 +3,7 @@ package ru.nsu.group20211.airport_system.domain.plane.models
 import entity.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
+import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import java.sql.ResultSet
 import java.sql.Timestamp
 import kotlin.reflect.KClass
@@ -15,6 +16,7 @@ data class AircraftRepairReport(
     var report: String = "",
 
     var planeEntity: Plane? = null,
+    var brigade: Brigade? = null
 ) : DbEntity {
     override fun customGetId(): Int {
         TODO("Not yet implemented")
@@ -46,7 +48,7 @@ data class AircraftRepairReport(
             append(""" , "repairTeam" = $repairTeam """)
             if (dateRepair != null)
                 append(""" , "dateRepair" = TO_TIMESTAMP('$dateRepair', 'YYYY-MM-DD HH24:MI:SS.FF') """)
-            append(""" , "report" = $report """)
+            append(""" , "report" = '$report' """)
             append(""" WHERE "id" = $id """)
         }
     }

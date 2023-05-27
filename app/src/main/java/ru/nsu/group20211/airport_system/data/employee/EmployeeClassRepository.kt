@@ -32,17 +32,16 @@ class EmployeeClassRepository @Inject constructor(
             """LEFT JOIN ${Human.getTableName()} ON ( ${Human.getTableName()}."id" = ${Employee.getTableName()}."idHuman") """
         )
         val mutex = Mutex()
-        EmployeeClass.Administrator.getAll()
         coroutineScope {
             launch {
                 launch {
                     dbContainer.connect().use {
                         val result = it.executeQuery(
-                            EmployeeClass.Administrator.getAll() + addJoins(joinList) + addWhere(
+                            (EmployeeClass.Administrator.getAll() + addJoins(joinList) + addWhere(
                                 listCond
                             ) + addOrderBy(
                                 listOrder
-                            ).log()
+                            )).log()
                         )
                         while (result.next()) {
                             val (classEmployee, index) = result.getInstance(clazz = EmployeeClass.Administrator::class)

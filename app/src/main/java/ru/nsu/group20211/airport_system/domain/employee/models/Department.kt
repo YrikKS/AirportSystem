@@ -7,13 +7,11 @@ import java.sql.ResultSet
 import kotlin.reflect.KClass
 
 data class Department(
-    val id: Int = 0,
-    val idBoss: Int = 0,
-    val nameDepartment: String = "",
+    var id: Int = 0,
+    var idBoss: Int = 0,
+    var nameDepartment: String = "",
 
     var administrator: EmployeeClass.Administrator? = null,
-    var employeeAdministrator: Employee? = null,
-    var humanAdministrator: Human? = null
 ) : DbEntity {
     override fun customGetId(): Int {
         return id
@@ -25,12 +23,12 @@ data class Department(
 
     override fun insertQuery(): String {
         return buildString {
-            append(""" INSERT INTO "departments" ("idBoss", "nameDepartment") VALUES($idBoss, '$nameDepartment'); """)
+            append(""" INSERT INTO "departments" ("idBoss", "nameDepartment") VALUES($idBoss, '$nameDepartment') """)
         }
     }
 
     override fun deleteQuery(): String {
-        return """ DELETE FROM ${getTableName()} WHERE "id" = "$id" """
+        return """ DELETE FROM ${getTableName()} WHERE "id" = $id """
     }
 
     override fun updateQuery(): String {
@@ -38,7 +36,7 @@ data class Department(
             append("UPDATE ")
             append(getTableName())
             append(" SET ")
-            append(""" "idBoss" = $idBoss, "nameDepartment" = '$nameDepartment' WHERE "id" = $id; """)
+            append(""" "idBoss" = $idBoss, "nameDepartment" = '$nameDepartment' WHERE "id" = $id """)
         }
     }
 

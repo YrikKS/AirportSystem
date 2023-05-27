@@ -17,7 +17,12 @@ sealed class EmployeeClass : DbEntity {
     var employee: Int = 0
     var employeeEntity: Employee? = null
 
-    override fun customGetId() = employee
+    override fun customGetId(): Int {
+        return when (this) {
+            is Administrator -> id
+            else -> employee
+        }
+    }
 
     fun myCopy(): EmployeeClass {
         return when (this) {
