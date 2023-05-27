@@ -10,17 +10,29 @@ fun String.log(): String {
 }
 
 fun StringBuilder.addWhere(list: List<String>): StringBuilder {
-    if (list.isNotEmpty()) append(" WHERE ") else append("")
-    if (list.isNotEmpty())
-        append(list.first())
-    if (list.size > 1) {
-        list.forEachIndexed { index, str ->
-            if (index != 0 && str.isNotEmpty()) {
+    var isWhenAdded = false
+    list.forEach { element ->
+        if (element.isNotEmpty()) {
+            if (isWhenAdded == false) {
+                append(" WHERE ")
+                isWhenAdded = true
+            } else {
                 append(" AND ")
-                append(str)
             }
+            append(element)
         }
     }
+//    if (list.isNotEmpty()) append(" WHERE ") else append("")
+//    if (list.isNotEmpty())
+//        append(list.first())
+//    if (list.size > 1) {
+//        list.forEachIndexed { index, str ->
+//            if (index != 0 && str.isNotEmpty()) {
+//                append(" AND ")
+//                append(str)
+//            }
+//        }
+//    }
     return this
 }
 
@@ -29,15 +41,16 @@ fun addOrderBy(list: List<String>): String {
 }
 
 fun StringBuilder.addOrderBy(list: List<String>): StringBuilder {
-    if (list.isNotEmpty()) append(" ORDER BY ") else append("")
-    if (list.isNotEmpty())
-        append(list.first())
-    if (list.size > 1) {
-        list.forEachIndexed { index, str ->
-            if (index != 0) {
+    var isOrderAdded = false
+    list.forEach { element ->
+        if (element.isNotEmpty()) {
+            if (isOrderAdded == false) {
+                append(" ORDER BY ")
+                isOrderAdded = true
+            } else {
                 append(" AND ")
-                append(str)
             }
+            append(element.addQuo())
         }
     }
     return this

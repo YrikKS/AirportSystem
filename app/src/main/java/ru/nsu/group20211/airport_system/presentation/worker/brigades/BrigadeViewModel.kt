@@ -29,6 +29,7 @@ class BrigadeViewModel @Inject constructor(
             runCatchingNonCancellation {
                 repository.getAll(listCond, listOrder)
             }.onFailure {
+                it.printStackTrace()
                 errorProvider.emit(it)
             }.onSuccess {
                 stateProvider.emit(it)
@@ -37,10 +38,22 @@ class BrigadeViewModel @Inject constructor(
     }
 
     suspend fun getCount(): Int {
-        return repository.getCountBrigades()
+        return runCatchingNonCancellation {
+            repository.getCountBrigades()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            0
+        }
     }
 
     suspend fun getDepartment(): List<Department> {
-        return repository.getDepartment()
+        return runCatchingNonCancellation {
+            repository.getDepartment()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            emptyList()
+        }
     }
 }

@@ -21,6 +21,15 @@ data class Human(
     var countChildren: Int = 0,
 ) : DbEntity, Parcelable {
 
+    fun getFIO(): String {
+        return buildString {
+            append("$surname ")
+            append("$name ")
+            if (patronymic != null && patronymic != "null")
+                append("$patronymic ")
+        }
+    }
+
     override fun customGetId(): Int {
         return id
     }
@@ -31,15 +40,28 @@ data class Human(
 
     override fun insertQuery() = buildString {
         append("INSERT INTO ${getTableName()} ")
-        if (dateOfBirth != null) {
-            append("""("name", "surname", "patronymic", "sex", "dateOfBirth", "countChildren") VALUES (""")
+        append(""" ("name", "surname",  """)
+        if (patronymic != null) {
+            append(""" patronymic", "sex",  """)
         } else {
-            append("""("name", "surname", "patronymic", "sex", "countChildren") VALUES (""")
+            append(""" "sex",  """)
         }
-        append("""'${name}', '${surname}', '${patronymic}', '${sex}', """)
-        if (dateOfBirth != null)
-            append("""TO_DATE('${dateOfBirth}', 'YYYY-MM-DD'), """)
-        append("""${countChildren})""")
+        if (dateOfBirth != null) {
+            append(""""" dateOfBirth", "countChildren") VALUES (""")
+        } else {
+            append(""""" "countChildren") VALUES (""")
+        }
+        append(""" '${name}', '${surname}',  """)
+        if (patronymic != null) {
+            append(""" '${patronymic}', '${sex}',   """)
+        } else {
+            append(""" '${sex}',  """)
+        }
+        if (dateOfBirth != null) {
+            append(""" TO_DATE('${dateOfBirth}', 'YYYY-MM-DD'), """)
+        } else {
+            append("""${countChildren})""")
+        }
     }
 
     override fun deleteQuery() = buildString {
@@ -55,7 +77,8 @@ data class Human(
         append(" SET ")
         append(""" "name" = '$name', """)
         append(""" "surname" = '$surname', """)
-        append(""" "patronymic" = '$patronymic', """)
+        if (patronymic != null && patronymic != "null")
+            append(""" "patronymic" = '$patronymic', """)
         append(""" "sex" = '$sex',  """)
         if (dateOfBirth != null)
             append(""" "dateOfBirth" = TO_DATE('${dateOfBirth}', 'YYYY-MM-DD'),  """)

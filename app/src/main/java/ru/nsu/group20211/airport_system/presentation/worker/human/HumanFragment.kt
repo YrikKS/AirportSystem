@@ -15,18 +15,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.terrakok.cicerone.Router
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.sidesheet.SideSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import ru.nsu.group20211.airport_system.addPickParamInternet
+import ru.nsu.group20211.airport_system.addPickParamNoInternet
+import ru.nsu.group20211.airport_system.addSlider
 import ru.nsu.group20211.airport_system.appComponent
+import ru.nsu.group20211.airport_system.domain.DbEntity
+import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.employee.models.Human
 import ru.nsu.group20211.airport_system.domain.employee.models.human
+import ru.nsu.group20211.airport_system.presentation.DbFilter
 import ru.nsu.group20211.airport_system.presentation.SpaceItemDecorator
 import ru.nsu.group20211.airport_system.setItems
 import ru.nsu.group20211.airportsystem.R
 import ru.nsu.group20211.airportsystem.databinding.BottomDialogBinding
 import ru.nsu.group20211.airportsystem.databinding.DialogInflatorBinding
-import ru.nsu.group20211.airportsystem.databinding.FragmentHumanBinding
+import ru.nsu.group20211.airportsystem.databinding.FragmentEmployeeBinding
+import ru.nsu.group20211.airportsystem.databinding.SideDialogBinding
 import java.sql.Date
 import java.text.SimpleDateFormat
 import javax.inject.Inject
@@ -40,7 +48,7 @@ class HumanFragment : Fragment() {
     @Inject
     lateinit var router: Router
 
-    private lateinit var binding: FragmentHumanBinding
+    private lateinit var binding: FragmentEmployeeBinding
     private lateinit var adapter: HumanAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,21 +61,26 @@ class HumanFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHumanBinding.inflate(inflater, container, false)
+        binding = FragmentEmployeeBinding.inflate(inflater, container, false)
         setupUi()
         return binding.root
     }
 
     private fun setupUi() {
         adapter = HumanAdapter(emptyList()) { createDialog(it) }
-        binding.recycleHuman.adapter = adapter
-        binding.recycleHuman.layoutManager = LinearLayoutManager(requireContext())
-        binding.recycleHuman.addItemDecoration(SpaceItemDecorator(3))
-        binding.floatingHuman.setOnClickListener {
+        binding.recycleEmployee.adapter = adapter
+        binding.recycleEmployee.layoutManager = LinearLayoutManager(requireContext())
+        binding.recycleEmployee.addItemDecoration(SpaceItemDecorator(3))
+        binding.floatingEmployee.setOnClickListener {
             openBottomDialogInsert()
         }
+        binding.buttonSide.setOnClickListener {
+            openSideDialog()
+        }
+        binding.title.setText("Human")
         model.stateProvider
             .onEach {
+                if (it.isNotEmpty()) binding.countElements.text = "count: ${it.size}"
                 adapter.list = it
                 adapter.notifyDataSetChanged()
             }
@@ -102,6 +115,83 @@ class HumanFragment : Fragment() {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun generateSidePickSort(): List<Pair<String, String>> {
+        return listOf(
+            "None" to "None",
+            "Name" to "name",
+            "Surname" to "surname",
+            "Date of birth" to "dateOfBirth",
+        )
+    }
+
+    private fun generateSidePickParams(filter: DbFilter): List<Triple<String, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>, (DbEntity?) -> Unit>> {
+        return listOf()
+    }
+
+    private fun generateSidePickParamNoInternet(filter: DbFilter): List<Triple<String, List<String>, (String?) -> Unit>> {
+        return listOf(
+            Triple(
+                "Sex",
+                listOf("Men", "Women")
+            ) {
+                if (it != null) {
+                    filter.queryMap[3] = """ "human"."sex" = '${it.first()}' """
+                } else {
+                    filter.queryMap.remove(3)
+                }
+            }
+        )
+    }
+
+    private fun generateSlide(filter: DbFilter): List<Triple<String, suspend () -> Pair<Float, Float>, (Float, Float) -> Unit>> {
+        return listOf()
+    }
+
+    private fun openSideDialog() {
+        SideSheetDialog(requireContext()).apply {
+            val dialog = SideDialogBinding.inflate(LayoutInflater.from(requireContext()))
+            setContentView(dialog.root)
+            val filter = DbFilter()
+
+            // Sort
+            val fieldName = generateSidePickSort()
+            dialog.layoutExposed.isVisible = true
+            dialog.textExposed.isVisible = true
+            dialog.layoutExposed.hint = "Sort by"
+            dialog.textExposed.setText("None")
+            dialog.textExposed.setItems(fieldName.map { item -> item.first }.toTypedArray())
+            dialog.textExposed.setOnItemClickListener { parent, view, position, id ->
+                filter.nameFieldSort = fieldName[id.toInt()].second
+            }
+            //Slide
+            dialog.paramsContainer.addSlider(
+                requireContext(),
+                generateSlide(filter),
+                lifecycleScope
+            )
+
+            //PickWithInternet
+            dialog.paramsContainer.addPickParamInternet(
+                requireContext(),
+                generateSidePickParams(filter),
+                lifecycleScope
+            )
+
+            // PircNoInternet
+            dialog.paramsContainer.addPickParamNoInternet(
+                requireContext(),
+                generateSidePickParamNoInternet(filter)
+            )
+
+
+            dialog.button.setOnClickListener {
+                val (listCond, listOrder) = filter.generateQuery()
+                model.getData(listCond, listOrder)
+                dismiss()
+            }
+        }.show()
     }
 
     private fun openBottomDialogUpdate(human: Human) {
@@ -157,7 +247,7 @@ class HumanFragment : Fragment() {
                                 when (key) {
                                     "Name" -> newHuman.name = view.text.toString()
                                     "Surname" -> newHuman.surname = view.text.toString()
-                                    "Pyrtonymic" -> newHuman.patronymic = view.text.toString()
+                                    "Pyrtonymic" -> newHuman.patronymic = (view.text ?: "").toString()
                                     "Count children" -> newHuman.countChildren =
                                         view.text.toString().toInt()
 
@@ -242,7 +332,7 @@ class HumanFragment : Fragment() {
                                 when (key) {
                                     "Name" -> newHuman.name = view.text.toString()
                                     "Surname" -> newHuman.surname = view.text.toString()
-                                    "Patronymic" -> newHuman.patronymic = view.text.toString()
+                                    "Patronymic" -> newHuman.patronymic = (view.text ?: "").toString()
                                     "Count children" -> newHuman.countChildren =
                                         view.text.toString().toInt()
 

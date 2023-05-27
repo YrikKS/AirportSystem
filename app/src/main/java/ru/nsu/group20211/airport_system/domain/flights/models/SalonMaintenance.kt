@@ -3,6 +3,7 @@ package ru.nsu.group20211.airport_system.domain.flights.models
 import entity.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
+import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import java.sql.ResultSet
 import java.sql.Timestamp
 import kotlin.reflect.KClass
@@ -12,7 +13,10 @@ data class SalonMaintenance(
     var idFlight: Int = 0,
     var idCleaningTeamSalon: Int = 0,
     var date: Timestamp? = null,
-    var report: String = ""
+    var report: String = "",
+
+    var brigade : Brigade? = null,
+    var schedule: FlightSchedule? = null
 ) : DbEntity {
     override fun customGetId(): Int {
         return id

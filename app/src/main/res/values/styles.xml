@@ -19,7 +19,7 @@
     </style>
 
     <style name="Widget.App.SideSheet.Modal" parent="Widget.Material3.SideSheet.Modal">
-        <item name="backgroundTint">#69D0FF</item>
+        <item name="backgroundTint">#E1F5FE</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent2</item>
     </style>
 

@@ -3,6 +3,7 @@ package ru.nsu.group20211.airport_system.domain.flights.models
 import entity.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
+import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import java.sql.ResultSet
 import java.sql.Timestamp
 import kotlin.reflect.KClass
@@ -15,7 +16,9 @@ data class Refueling(
     var refilledLiters: Float = 0.0F,
     var date: Timestamp? = null,
 
-    var tupeFule: TypeFule? = null
+    var tupeFule: TypeFule? = null,
+    var refuelingBrigade : Brigade? = null,
+    var schedule: FlightSchedule? = null
 ) : DbEntity {
 
     override fun customGetId(): Int {

@@ -34,9 +34,7 @@ class DepartmentAdapter(var list: List<Department>, var clickListener: (Departme
             with(binding) {
                 nameDepartment.text = data.nameDepartment
                 this.boss.text =
-                    (data.administrator?.employeeEntity?.human?.name ?: "Unknown") + " " +
-                            (data?.administrator?.employeeEntity?.human?.surname ?: "Unknown") + " " +
-                            (data?.administrator?.employeeEntity?.human?.patronymic ?: "")
+                    (data.administrator?.employeeEntity?.human?.getFIO() ?: "Unknown")
                 root.setOnClickListener {
                     clickListener(data)
                 }

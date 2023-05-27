@@ -36,10 +36,7 @@ class EmployeeClassAdapter(
         fun bind(data: EmployeeClass) {
             with(binding) {
                 nameHuman.text =
-                    (data.employeeEntity?.human?.name ?: "Unknown") + " " +
-                            (data.employeeEntity?.human?.surname ?: "Unknown") + " " +
-                            (data.employeeEntity?.human?.patronymic ?: "")
-
+                    (data.employeeEntity?.human?.getFIO() ?: "Unknown")
                 dateOfBirth.text =
                     "Date of birth: " + (data.employeeEntity?.human?.dateOfBirth ?: "Unknown")
 

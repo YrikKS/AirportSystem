@@ -3,24 +3,33 @@ package ru.nsu.group20211.airport_system.domain.flights.models
 import entity.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
+import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
+import ru.nsu.group20211.airport_system.domain.plane.models.Plane
 import java.sql.ResultSet
 import java.sql.Timestamp
 import kotlin.reflect.KClass
 
 data class FlightSchedule(
-    val id: Int,
-    val plane: Int,
-    val typeFlight: Int,
-    val status: Int,
-    val brigadePilots: Int,
-    val brigadeWorker: Int,
-    val idApproximateFlights: Int?,
-    val idDepartureAirport: Int?,
-    val idArrivalAirport: Int?,
-    val takeoffTime: Timestamp?,
-    val boardingTime: Timestamp?,
-    val price: Float,
-    val minNumberTickets: Int
+    var id: Int,
+    var plane: Int,
+    var typeFlight: Int,
+    var status: Int,
+    var brigadePilots: Int,
+    var brigadeWorker: Int,
+    var idApproximateFlights: Int?,
+    var idDepartureAirport: Int?,
+    var idArrivalAirport: Int?,
+    var takeoffTime: Timestamp?,
+    var boardingTime: Timestamp?,
+    var price: Float,
+    var minNumberTickets: Int,
+
+    var departure: Airport? = null,
+    var arrival: Airport? = null,
+    var approximateFlight: ApproximateFlight? = null,
+    var planeEntity: Plane? = null,
+    var pilots: Brigade? = null,
+    var workers: Brigade? = null
 ) : DbEntity {
     override fun customGetId(): Int {
         return id

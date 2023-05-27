@@ -13,7 +13,10 @@ data class ApproximateFlight(
     var idArrivalAirport: Int,
     var frequencyInDays: Int = 1,
     var approximateTakeoffTime: Timestamp? = null,
-    var approximatePrice: Float
+    var approximatePrice: Float,
+
+    var departureAirport : Airport? = null,
+    var arrivalAirport : Airport? = null,
 ) : DbEntity {
     override fun customGetId(): Int {
         return id

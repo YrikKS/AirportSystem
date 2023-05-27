@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
@@ -21,6 +22,9 @@ import kotlinx.coroutines.withContext
 import ru.nsu.group20211.airport_system.addInsertButton
 import ru.nsu.group20211.airport_system.addInsertPickField
 import ru.nsu.group20211.airport_system.addInsertTextField
+import ru.nsu.group20211.airport_system.addPickParamInternet
+import ru.nsu.group20211.airport_system.addPickParamNoInternet
+import ru.nsu.group20211.airport_system.addSlider
 import ru.nsu.group20211.airport_system.addUpdateButton
 import ru.nsu.group20211.airport_system.addUpdatePickField
 import ru.nsu.group20211.airport_system.addUpdateTextField
@@ -28,11 +32,12 @@ import ru.nsu.group20211.airport_system.appComponent
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.employee.models.Department
+import ru.nsu.group20211.airport_system.presentation.DbFilter
 import ru.nsu.group20211.airport_system.presentation.SpaceItemDecorator
+import ru.nsu.group20211.airport_system.setItems
 import ru.nsu.group20211.airportsystem.R
 import ru.nsu.group20211.airportsystem.databinding.BottomDialogBinding
 import ru.nsu.group20211.airportsystem.databinding.FragmentBrigadeBinding
-import ru.nsu.group20211.airportsystem.databinding.FragmentEmployeeBinding
 import ru.nsu.group20211.airportsystem.databinding.SideDialogBinding
 import javax.inject.Inject
 
@@ -153,90 +158,69 @@ class BrigadeFragment : Fragment() {
             .show()
     }
 
+
+    private fun generateSidePickSort(): List<Pair<String, String>> {
+        return listOf(
+            "None" to "None",
+            "Name" to """brigades"."nameBrigade""",
+            "Department" to """departments"."nameDepartment""",
+        )
+    }
+
+    private fun generateSidePickParams(filter: DbFilter): List<Triple<String, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>, (DbEntity?) -> Unit>> {
+        return listOf()
+    }
+
+    private fun generateSidePickParamNoInternet(filter: DbFilter): List<Triple<String, List<String>, (String?) -> Unit>> {
+        return listOf()
+    }
+
+    private fun generateSlide(filter: DbFilter): List<Triple<String, suspend () -> Pair<Float, Float>, (Float, Float) -> Unit>> {
+        return listOf()
+    }
+
     private fun openSideDialog() {
         SideSheetDialog(requireContext()).apply {
             val dialog = SideDialogBinding.inflate(LayoutInflater.from(requireContext()))
             setContentView(dialog.root)
-//            var salaryFilter = Pair("0", "${Int.MAX_VALUE}")
-//            dialog.paramsContainer.addSlider(
-//                "Salary",
-//                requireContext(),
-//                lifecycleScope,
-//                suspend { model.getMinSalary() to model.getMaxSalary() },
-//                { salaryFilter = salaryFilter.copy(first = it) },
-//                { salaryFilter = salaryFilter.copy(second = it) }
-//            )
-//            var experienceFilter = Pair("0", "${Int.MAX_VALUE}")
-//            dialog.paramsContainer.addSlider(
-//                "Experience",
-//                requireContext(),
-//                lifecycleScope,
-//                suspend {
-//                    model.getMinExperience().toFloat() to model.getMaxExperience().toFloat()
-//                },
-//                { experienceFilter = experienceFilter.copy(first = it) },
-//                { experienceFilter = experienceFilter.copy(second = it) }
-//            )
-//            var sexFilter = Pair(true, true)
-//            dialog.paramsContainer.addView(
-//                SideDialogParametrsInflatorBinding.inflate(LayoutInflater.from(requireContext()))
-//                    .let {
-//                        it.fieldName.isVisible = true
-//                        it.fieldName.text = "Sex"
-//                        it.checkBoxContainer.isVisible = true
-//                        it.checkBoxContainer.addView(
-//                            MaterialCheckBox(
-//                                requireContext()
-//                            ).apply {
-//                                text = "Men"
-//                                checkedState = MaterialCheckBox.STATE_CHECKED
-//                                addOnCheckedStateChangedListener { checkBox, state ->
-//                                    if (state == MaterialCheckBox.STATE_CHECKED) {
-//                                        sexFilter = sexFilter.copy(first = false)
-//                                    } else {
-//                                        sexFilter = sexFilter.copy(first = true)
-//                                    }
-//                                }
-//                            }
-//                        )
-//                        it.checkBoxContainer.addView(
-//                            MaterialCheckBox(
-//                                requireContext()
-//                            ).apply {
-//                                text = "Women"
-//                                checkedState = MaterialCheckBox.STATE_CHECKED
-//                                addOnCheckedStateChangedListener { checkBox, state ->
-//                                    if (state == MaterialCheckBox.STATE_CHECKED) {
-//                                        sexFilter = sexFilter.copy(second = false)
-//                                    } else {
-//                                        sexFilter = sexFilter.copy(second = true)
-//                                    }
-//                                }
-//                            }
-//                        )
-//                        it.root
-//                    }
-//            )
-//            dialog.button.setOnClickListener {
-//                model.getData(
-//                    listCond = listOf(
-//                        """ ${Employee.getTableName()}."salary" BETWEEN ${salaryFilter.first} AND ${salaryFilter.second}  """,
-//                        """ EXTRACT (YEAR FROM SYSDATE) - EXTRACT (YEAR FROM "employees"."dateOfEmployment") BETWEEN ${experienceFilter.first} AND ${experienceFilter.second}  """,
-//                        buildString {
-//                            append("")
-//                            if (!sexFilter.first && !sexFilter.second) return@buildString
-//                            append("(")
-//                            append(if (sexFilter.first) """ ${Human.getTableName()}."sex" = 'M' """ else "")
-//                            if (sexFilter.first && sexFilter.second) append("OR")
-//                            append(if (sexFilter.second) """ ${Human.getTableName()}."sex" = 'W' """ else "")
-//                            append(")")
-//                        }
-//
-//
-//                    )
-//                )
-//                dismiss()
-//            }
+            val filter = DbFilter()
+
+            // Sort
+            val fieldName = generateSidePickSort()
+            dialog.layoutExposed.isVisible = true
+            dialog.textExposed.isVisible = true
+            dialog.layoutExposed.hint = "Sort by"
+            dialog.textExposed.setText("None")
+            dialog.textExposed.setItems(fieldName.map { item -> item.first }.toTypedArray())
+            dialog.textExposed.setOnItemClickListener { parent, view, position, id ->
+                filter.nameFieldSort = fieldName[id.toInt()].second
+            }
+            //Slide
+            dialog.paramsContainer.addSlider(
+                requireContext(),
+                generateSlide(filter),
+                lifecycleScope
+            )
+
+            //PickWithInternet
+            dialog.paramsContainer.addPickParamInternet(
+                requireContext(),
+                generateSidePickParams(filter),
+                lifecycleScope
+            )
+
+            // PircNoInternet
+            dialog.paramsContainer.addPickParamNoInternet(
+                requireContext(),
+                generateSidePickParamNoInternet(filter)
+            )
+
+
+            dialog.button.setOnClickListener {
+                val (listCond, listOrder) = filter.generateQuery()
+                model.getData(listCond, listOrder)
+                dismiss()
+            }
         }.show()
     }
 

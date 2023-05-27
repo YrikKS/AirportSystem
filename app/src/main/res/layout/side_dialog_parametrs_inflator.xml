@@ -18,11 +18,10 @@
         android:valueFrom="0.0"
         android:valueTo="100.0"
         android:visibility="gone"
-        app:thumbColor="#FF7043"
-        app:tickColor="#3BC3FF"
+        app:thumbColor="#039BE5"
         app:tickVisible="false"
-        app:trackColorActive="#FF8A65"
-        app:trackColorInactive="#FFCCBC" />
+        app:trackColorActive="#29B6F6"
+        app:trackColorInactive="#81D4FA" />
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -37,5 +36,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_exposed"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/text_exposed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="none"
+            android:textSize="14sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

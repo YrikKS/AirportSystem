@@ -107,9 +107,7 @@ class DepartmentFragment : Fragment() {
                 "Boss",
                 { department.idBoss = it.customGetId() },
                 suspend { model.getAdministrators() } to {
-                    (it as EmployeeClass.Administrator).employeeEntity?.human?.name + " " +
-                            it.employeeEntity?.human?.surname + " " +
-                            (it.employeeEntity?.human?.patronymic ?: "")
+                    (it as EmployeeClass.Administrator).employeeEntity?.human?.getFIO() ?: ""
                 }),
         )
     }
@@ -129,14 +127,10 @@ class DepartmentFragment : Fragment() {
     ): List<Triple<Pair<String, String>, (DbEntity) -> Unit, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>>> {
         return listOf(
             Triple(
-                "Boss" to department.administrator?.employeeEntity?.human?.name + " " +
-                        department.administrator?.employeeEntity?.human?.surname + " " +
-                        (department.administrator?.employeeEntity?.human?.patronymic ?: ""),
+                "Boss" to (department.administrator?.employeeEntity?.human?.getFIO() ?: ""),
                 { newDepartment.idBoss = it.customGetId() },
                 suspend { model.getAdministrators() } to {
-                    (it as EmployeeClass.Administrator).employeeEntity?.human?.name + " " +
-                            it.employeeEntity?.human?.surname + " " +
-                            (it.employeeEntity?.human?.patronymic ?: "")
+                    (it as EmployeeClass.Administrator).employeeEntity?.human?.getFIO() ?: ""
                 }),
         )
     }

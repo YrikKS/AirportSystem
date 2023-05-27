@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.nsu.group20211.airport_system.domain.DbEntity
+import ru.nsu.group20211.airport_system.presentation.DbFilter
 import ru.nsu.group20211.airportsystem.databinding.DialogInflatorBinding
 import ru.nsu.group20211.airportsystem.databinding.SideDialogParametrsInflatorBinding
 import java.sql.Date
@@ -250,38 +251,130 @@ fun LinearLayoutCompat.addUpdateButton(
     )
 }
 
-fun LinearLayoutCompat.addSlider(
-    nameField: String,
+
+fun LinearLayoutCompat.addFilterPick(
     context: Context,
-    coroutineScope: CoroutineScope,
-    initValue: suspend () -> Pair<Float, Float>,
-    getValue: (String) -> Unit,
-    getValueSecond: (String) -> Unit
+    fieldName: List<Pair<String, String>>,
+    filter: DbFilter
 ) {
     addView(
-        SideDialogParametrsInflatorBinding.inflate(
+        DialogInflatorBinding.inflate(
             LayoutInflater.from(context)
         ).also {
             with(it) {
-                coroutineScope.launch(Dispatchers.IO) {
-                    val (init1, init2) = initValue()
-                    withContext(Dispatchers.Main) {
-                        seekBar.setValues(init1, init2)
-                        seekBar.isVisible = true
-                        seekBar.valueFrom = init1
-                        seekBar.valueTo = init2
-                        seekBar.stepSize = 1f
-                    }
-                }
-                fieldName.text = nameField
-                fieldName.isVisible = true
-                seekBar.addOnChangeListener { rangeSlider, value, fromUser ->
-                    if (fromUser) {
-                        getValue(rangeSlider.values.first().toString())
-                        getValueSecond(rangeSlider.values.last().toString())
-                    }
+                this.layoutExposed.isVisible = true
+                this.textExposed.isVisible = true
+                this.layoutExposed.hint = "Sort by"
+                this.textExposed.setItems(fieldName.map { item -> item.first }.toTypedArray())
+                this.textExposed.setOnItemClickListener { parent, view, position, id ->
+                    filter.nameFieldSort = fieldName[id.toInt()].second
                 }
             }
         }.root
     )
+}
+
+fun LinearLayoutCompat.addSlider(
+    context: Context,
+    listParams: List<Triple<String, suspend () -> Pair<Float, Float>, (Float, Float) -> Unit>>,
+    coroutineScope: CoroutineScope
+) {
+    listParams.forEach { data ->
+        addView(
+            SideDialogParametrsInflatorBinding.inflate(
+                LayoutInflater.from(context)
+            ).also {
+                with(it) {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        val (min, max) = data.second()
+                        withContext(Dispatchers.Main) {
+                            seekBar.setValues(min, max)
+                            seekBar.isVisible = true
+                            fieldName.isVisible = true
+                            seekBar.valueFrom = min
+                            seekBar.valueTo = max
+                            seekBar.stepSize = 1f
+                        }
+                    }
+                    fieldName.text = data.first
+                    seekBar.addOnChangeListener { rangeSlider, value, fromUser ->
+                        if (fromUser) {
+                            data.third(rangeSlider.values.first(), rangeSlider.values.last())
+                        }
+                    }
+                }
+            }.root
+        )
+    }
+}
+
+fun LinearLayoutCompat.addPickParamInternet(
+    context: Context,
+    listParams: List<Triple<String, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>, (DbEntity?) -> Unit>>,
+    coroutineScope: CoroutineScope
+) {
+    listParams.forEach { data ->
+        addView(
+            SideDialogParametrsInflatorBinding.inflate(
+                LayoutInflater.from(context)
+            ).also {
+                with(it) {
+                    fieldName.text = data.first
+                    textExposed.isVisible = true
+                    layoutExposed.isVisible = true
+
+                    layoutExposed.hint = data.first
+                    textExposed.setText("None")
+
+                    coroutineScope.launch(Dispatchers.IO) {
+                        val listItems = data.second.first()
+                        withContext(Dispatchers.Main) {
+                            textExposed.setItems(listItems.map { item ->
+                                data.second.second(
+                                    item
+                                )
+                            }.toMutableList().also {
+                                it.add(0, "None")
+                            }.toTypedArray())
+                        }
+                        textExposed.setOnItemClickListener { parent, view, position, id ->
+                            val item = listItems.getOrNull(id.toInt() - 1)
+                            data.third(item)
+                        }
+                    }
+
+                }
+            }.root
+        )
+    }
+}
+
+fun LinearLayoutCompat.addPickParamNoInternet(
+    context: Context,
+    listParams: List<Triple<String, List<String>, (String?) -> Unit>>,
+) {
+    listParams.forEach { data ->
+        addView(
+            SideDialogParametrsInflatorBinding.inflate(
+                LayoutInflater.from(context)
+            ).also {
+                with(it) {
+                    fieldName.text = data.first
+                    this.layoutExposed.isVisible = true
+                    this.textExposed.isVisible = true
+                    this.layoutExposed.hint = data.first
+                    this.textExposed.setText("None")
+                    val listItems = data.second
+                    textExposed.setItems(listItems.toMutableList().also {
+                        it.add(0, "None")
+                    }.toTypedArray())
+                    textExposed.setOnItemClickListener { parent, view, position, id ->
+                        val item = listItems.getOrNull(id.toInt() - 1)
+                        data.third(item)
+                    }
+                }
+
+            }.root
+        )
+    }
 }

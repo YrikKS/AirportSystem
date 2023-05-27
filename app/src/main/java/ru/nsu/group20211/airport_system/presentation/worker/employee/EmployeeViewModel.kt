@@ -8,6 +8,7 @@ import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.employee.models.Employee
 import ru.nsu.group20211.airport_system.domain.employee.models.Human
 import ru.nsu.group20211.airport_system.presentation.BaseDbViewModel
+import ru.nsu.group20211.airport_system.runCatchingNonCancellation
 import javax.inject.Inject
 
 class EmployeeViewModel @Inject constructor(
@@ -19,30 +20,72 @@ class EmployeeViewModel @Inject constructor(
     override val errorProvider = MutableSharedFlow<Throwable>()
 
     suspend fun getHumans(): List<Human> {
-        return humanRepository.getAll()
+        return runCatchingNonCancellation {
+            humanRepository.getAll()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            emptyList()
+        }
     }
 
     suspend fun getBrigades(): List<Brigade> {
-        return repository.getBrigades()
+        return runCatchingNonCancellation {
+            repository.getBrigades()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            emptyList()
+        }
     }
 
     suspend fun getMinSalary(): Float {
-        return repository.getMinSalary()
+        return runCatchingNonCancellation {
+            repository.getMinSalary()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            0F
+        }
     }
 
     suspend fun getMaxSalary(): Float {
-        return repository.getMaxSalary()
+        return runCatchingNonCancellation {
+            repository.getMaxSalary()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            Float.MAX_VALUE
+        }
     }
 
     suspend fun getMinExperience(): Int {
-        return repository.getMinExperience()
+        return runCatchingNonCancellation {
+            repository.getMinExperience()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            0
+        }
     }
 
     suspend fun getMaxExperience(): Int {
-        return repository.getMaxExperience()
+        return runCatchingNonCancellation {
+            repository.getMaxExperience()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            Int.MAX_VALUE
+        }
     }
 
     suspend fun getCount(): Int {
-        return repository.getCountEmployees()
+        return runCatchingNonCancellation {
+            repository.getCountEmployees()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            0
+        }
     }
 }

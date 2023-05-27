@@ -32,8 +32,7 @@ class HumanAdapter(var list: List<Human>, var cliclListner: (Human) -> Unit) :
 
         fun bind(data: Human) {
             with(binding) {
-                nameHuman.text =
-                    data.name + " " + data.surname + " " + (data.patronymic ?: "")
+                nameHuman.text = data.getFIO()
                 dateOfBirth.text = "Date of birth: " + data.dateOfBirth
                 sexPeople.text = if (data.sex == 'W') "Women" else "Men"
                 countChildren.text = "Count children: " + data.countChildren.toString()

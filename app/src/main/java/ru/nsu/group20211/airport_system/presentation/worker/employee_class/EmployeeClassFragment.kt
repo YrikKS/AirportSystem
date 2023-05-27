@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
@@ -19,6 +20,9 @@ import ru.nsu.group20211.airport_system.addInsertButton
 import ru.nsu.group20211.airport_system.addInsertPickField
 import ru.nsu.group20211.airport_system.addInsertPickFieldFromList
 import ru.nsu.group20211.airport_system.addInsertTextField
+import ru.nsu.group20211.airport_system.addPickParamInternet
+import ru.nsu.group20211.airport_system.addPickParamNoInternet
+import ru.nsu.group20211.airport_system.addSlider
 import ru.nsu.group20211.airport_system.addUpdateButton
 import ru.nsu.group20211.airport_system.addUpdatePickField
 import ru.nsu.group20211.airport_system.addUpdatePickFieldFromList
@@ -27,7 +31,9 @@ import ru.nsu.group20211.airport_system.appComponent
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.employee.models.Employee
 import ru.nsu.group20211.airport_system.domain.employee.models.EmployeeClass
+import ru.nsu.group20211.airport_system.presentation.DbFilter
 import ru.nsu.group20211.airport_system.presentation.SpaceItemDecorator
+import ru.nsu.group20211.airport_system.setItems
 import ru.nsu.group20211.airportsystem.R
 import ru.nsu.group20211.airportsystem.databinding.BottomDialogBinding
 import ru.nsu.group20211.airportsystem.databinding.FragmentEmployeeClassBinding
@@ -62,6 +68,7 @@ class EmployeeClassFragment : Fragment() {
         binding.recycleEmployee.adapter = adapter
         binding.recycleEmployee.layoutManager = LinearLayoutManager(requireContext())
         binding.recycleEmployee.addItemDecoration(SpaceItemDecorator(3))
+        binding.countElements.text = "count: 0"
         binding.floatingEmployee.setOnClickListener {
             openDialogForPickEmployee()
         }
@@ -72,6 +79,7 @@ class EmployeeClassFragment : Fragment() {
 
         model.stateProvider.onEach {
             adapter.list = it
+            binding.countElements.text = "count: ${it.size}"
             adapter.notifyDataSetChanged()
         }.flowWithLifecycle(lifecycle).launchIn(lifecycleScope)
 
@@ -85,6 +93,84 @@ class EmployeeClassFragment : Fragment() {
             }.show()
         }.flowWithLifecycle(lifecycle).launchIn(lifecycleScope)
         model.getData()
+    }
+
+    private fun generateSidePickSort(): List<Pair<String, String>> {
+        return listOf(
+            "None" to "None",
+            "Count children" to "countChildren",
+            "Name" to "name",
+            "Surname" to "surname",
+            "Date of birth" to "dateOfBirth",
+        )
+    }
+
+    private fun generateSidePickParams(filter: DbFilter): List<Triple<String, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>, (DbEntity?) -> Unit>> {
+        return listOf()
+    }
+
+    private fun generateSidePickParamNoInternet(filter: DbFilter): List<Triple<String, List<String>, (String?) -> Unit>> {
+        return listOf(
+            Triple(
+                "Sex",
+                listOf("Men", "Women")
+            ) {
+                if (it != null) {
+                    filter.queryMap[3] = """ "human"."sex" = '${it.first()}' """
+                } else {
+                    filter.queryMap.remove(3)
+                }
+            }
+        )
+    }
+
+    private fun generateSlide(filter: DbFilter): List<Triple<String, suspend () -> Pair<Float, Float>, (Float, Float) -> Unit>> {
+        return listOf()
+    }
+
+    private fun openSideDialog() {
+        SideSheetDialog(requireContext()).apply {
+            val dialog = SideDialogBinding.inflate(LayoutInflater.from(requireContext()))
+            setContentView(dialog.root)
+            val filter = DbFilter()
+
+            // Sort
+            val fieldName = generateSidePickSort()
+            dialog.layoutExposed.isVisible = true
+            dialog.textExposed.isVisible = true
+            dialog.layoutExposed.hint = "Sort by"
+            dialog.textExposed.setText("None")
+            dialog.textExposed.setItems(fieldName.map { item -> item.first }.toTypedArray())
+            dialog.textExposed.setOnItemClickListener { parent, view, position, id ->
+                filter.nameFieldSort = fieldName[id.toInt()].second
+            }
+            //Slide
+            dialog.paramsContainer.addSlider(
+                requireContext(),
+                generateSlide(filter),
+                lifecycleScope
+            )
+
+            //PickWithInternet
+            dialog.paramsContainer.addPickParamInternet(
+                requireContext(),
+                generateSidePickParams(filter),
+                lifecycleScope
+            )
+
+            // PircNoInternet
+            dialog.paramsContainer.addPickParamNoInternet(
+                requireContext(),
+                generateSidePickParamNoInternet(filter)
+            )
+
+
+            dialog.button.setOnClickListener {
+                val (listCond, listOrder) = filter.generateQuery()
+                model.getData(listCond, listOrder)
+                dismiss()
+            }
+        }.show()
     }
 
     private fun openDialogForPickEmployee() {
@@ -144,7 +230,7 @@ class EmployeeClassFragment : Fragment() {
     private fun generateInitPickField(employeeClass: EmployeeClass): List<Triple<String, (DbEntity) -> Unit, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>>> {
         return listOf(Triple("Employee",
             { employeeClass.employee = it.customGetId() },
-            suspend { model.getEmployees() } to { (it as Employee).human!!.name + " " + it.human!!.surname })
+            suspend { model.getEmployees() } to { (it as Employee).human!!.getFIO() })
         )
     }
 
@@ -226,9 +312,9 @@ class EmployeeClassFragment : Fragment() {
     private fun generateUpdatePickField(
         employeeClass: EmployeeClass, newEmployeeClass: EmployeeClass
     ): List<Triple<Pair<String, String>, (DbEntity) -> Unit, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>>> {
-        return listOf(Triple("Employee" to employeeClass.employeeEntity!!.human!!.name + " " + employeeClass.employeeEntity!!.human!!.surname,
+        return listOf(Triple("Employee" to employeeClass.employeeEntity!!.human!!.getFIO(),
             { newEmployeeClass.employee = it.customGetId() },
-            suspend { model.getEmployees() } to { (it as Employee).human!!.name + " " + it.human!!.surname })
+            suspend { model.getEmployees() } to { (it as Employee).human!!.getFIO() })
         )
     }
 
@@ -300,14 +386,6 @@ class EmployeeClassFragment : Fragment() {
                 1 -> openBottomDialogUpdate(employeeClass)
             }
             dialog.dismiss()
-        }.show()
-    }
-
-    private fun openSideDialog() {
-        SideSheetDialog(requireContext()).apply {
-            val dialog = SideDialogBinding.inflate(LayoutInflater.from(requireContext()))
-            setContentView(dialog.root)
-
         }.show()
     }
 

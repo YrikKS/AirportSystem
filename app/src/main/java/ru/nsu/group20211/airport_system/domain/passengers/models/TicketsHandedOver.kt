@@ -3,6 +3,7 @@ package ru.nsu.group20211.airport_system.domain.passengers.models
 import entity.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
+import ru.nsu.group20211.airport_system.domain.flights.models.FlightSchedule
 import java.sql.ResultSet
 import java.sql.Timestamp
 import kotlin.reflect.KClass
@@ -15,6 +16,9 @@ class TicketsHandedOver(
     var registrationTime: Timestamp? = null,
     var luggage: Char = 'Y',
     var timeOfDelivery: Timestamp? = null,
+
+    var passengerEntity: Passenger? = null,
+    var schedule: FlightSchedule? = null
 ) : DbEntity {
     override fun customGetId(): Int {
         return id

@@ -16,7 +16,7 @@ data class TechnicalInspection(
     var date: Timestamp? = null,
     var resultInspection: String = "",
 
-    var planeEntity: Plane? = null,
+    var schedule: FlightSchedule? = null,
     var brigade: Brigade? = null
 ) : DbEntity {
     override fun customGetId(): Int {

@@ -36,7 +36,7 @@ class EmployeeAdapter(var list: List<Employee>, var cliclListner: (Employee) -> 
                 employeeBrigades.text = "Brigade: " + data.brigade?.nameBrigade
                 dateOfEmployment.text = "Date of employment: " + data.dateOfEmployment?.toString()
                 nameHuman.text =
-                    "Worker: " + data.human!!.name + " " + data.human!!.surname + " " + (data.human?.patronymic ?: "")
+                    "Worker: " + data.human!!.getFIO()
                 root.setOnClickListener {
                     cliclListner(data)
                 }
