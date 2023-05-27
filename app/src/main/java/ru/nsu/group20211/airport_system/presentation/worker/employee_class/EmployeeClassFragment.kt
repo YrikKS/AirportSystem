@@ -144,6 +144,9 @@ class EmployeeClassFragment : Fragment() {
             dialog.textExposed.setOnItemClickListener { parent, view, position, id ->
                 filter.nameFieldSort = fieldName[id.toInt()].second
             }
+            dialog.materialCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                filter.desc = isChecked
+            }
             //Slide
             dialog.paramsContainer.addSlider(
                 requireContext(),

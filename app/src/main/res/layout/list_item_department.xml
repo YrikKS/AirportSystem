@@ -49,6 +49,15 @@
             app:layout_constraintTop_toBottomOf="@+id/name_department"
             tools:text="Date of employment: 12.05.1999" />
 
+        <TextView
+            android:id="@+id/count_people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/boss"
+            tools:text="count people: 20" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

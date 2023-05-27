@@ -8,6 +8,8 @@ import ru.nsu.group20211.airport_system.data.Repository
 import ru.nsu.group20211.airport_system.di.app_module.DatabaseModule
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade.Companion.getInstance
+import ru.nsu.group20211.airport_system.domain.employee.models.Department
+import ru.nsu.group20211.airport_system.domain.employee.models.Department.Companion.getInstance
 import ru.nsu.group20211.airport_system.domain.employee.models.Employee
 import ru.nsu.group20211.airport_system.domain.employee.models.Employee.Companion.getInstance
 import ru.nsu.group20211.airport_system.domain.employee.models.EmployeeClass
@@ -27,7 +29,8 @@ class EmployeeRepository @Inject constructor(
         val listResult = mutableListOf<Employee>()
         var joinList = listOf(
             """LEFT JOIN ${Human.getTableName()} ON (${Employee.getTableName()}."idHuman" = ${Human.getTableName()}."id") """,
-            """LEFT JOIN ${Brigade.getTableName()} ON (${Employee.getTableName()}."idBrigade" = ${Brigade.getTableName()}."id") """
+            """LEFT JOIN ${Brigade.getTableName()} ON (${Employee.getTableName()}."idBrigade" = ${Brigade.getTableName()}."id") """,
+            """LEFT JOIN ${Department.getTableName()} ON (${Department.getTableName()}."id" = ${Brigade.getTableName()}."idDepartment") """
         )
         dbContainer.connect().use {
             val result =
@@ -40,8 +43,10 @@ class EmployeeRepository @Inject constructor(
                 val (employee, index) = result.getInstance(clazz = Employee::class)
                 val (human, index_2) = result.getInstance(index, clazz = Human::class)
                 val (brigade, index_3) = result.getInstance(index_2, clazz = Brigade::class)
+                val (department, index_4) = result.getInstance(index_3, clazz = Department::class)
                 employee.human = human
                 employee.brigade = brigade
+                brigade.department = department
                 listResult.add(employee)
             }
         }

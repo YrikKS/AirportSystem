@@ -31,6 +31,7 @@ import ru.nsu.group20211.airport_system.addUpdateTextField
 import ru.nsu.group20211.airport_system.appComponent
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
+import ru.nsu.group20211.airport_system.domain.employee.models.Department
 import ru.nsu.group20211.airport_system.domain.employee.models.Employee
 import ru.nsu.group20211.airport_system.domain.employee.models.Human
 import ru.nsu.group20211.airport_system.presentation.DbFilter
@@ -141,7 +142,7 @@ class EmployeeFragment : Fragment() {
     ): List<Triple<Pair<String, String>, (DbEntity) -> Unit, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>>> {
         return listOf(Triple("Human" to employee.human!!.getFIO(),
             { newEmployee.humanId = it.customGetId() },
-            suspend { model.getHumans() } to { (it as Human).getFIO()}),
+            suspend { model.getHumans() } to { (it as Human).getFIO() }),
             Triple("Brigade" to employee.brigade!!.nameBrigade,
                 { newEmployee.idBrigade = it.customGetId() },
                 suspend { model.getBrigades() } to { (it as Brigade).nameBrigade })
@@ -170,6 +171,14 @@ class EmployeeFragment : Fragment() {
                     filter.queryMap.remove(0)
                 }
             },
+            Triple("Department",
+                suspend { model.getDepartment() } to { (it as Department).nameDepartment }) {
+                if (it != null) {
+                    filter.queryMap[0] = """ "departments"."id" = '${it.customGetId()}' """
+                } else {
+                    filter.queryMap.remove(0)
+                }
+            }
         )
     }
 
@@ -221,6 +230,9 @@ class EmployeeFragment : Fragment() {
             dialog.textExposed.setOnItemClickListener { parent, view, position, id ->
                 filter.nameFieldSort = fieldName[id.toInt()].second
             }
+            dialog.materialCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                filter.desc = isChecked
+            }
             //Slide
             dialog.paramsContainer.addSlider(
                 requireContext(),
@@ -263,7 +275,6 @@ class EmployeeFragment : Fragment() {
             dialog.dismiss()
         }.show()
     }
-
 
 
     private fun openBottomDialogUpdate(employee: Employee) {

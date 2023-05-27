@@ -50,7 +50,7 @@ fun StringBuilder.addOrderBy(list: List<String>): StringBuilder {
             } else {
                 append(" AND ")
             }
-            append(element.addQuo())
+            append(element)
         }
     }
     return this

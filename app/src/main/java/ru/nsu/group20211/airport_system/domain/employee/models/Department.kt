@@ -11,6 +11,7 @@ data class Department(
     var idBoss: Int = 0,
     var nameDepartment: String = "",
 
+    var countPeople: Int? = null,
     var administrator: EmployeeClass.Administrator? = null,
 ) : DbEntity {
     override fun customGetId(): Int {

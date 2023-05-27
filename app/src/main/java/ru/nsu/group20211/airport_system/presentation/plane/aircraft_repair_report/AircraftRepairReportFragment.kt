@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
@@ -13,11 +14,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.sidesheet.SideSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.nsu.group20211.airport_system.addInsertButton
 import ru.nsu.group20211.airport_system.addInsertPickField
 import ru.nsu.group20211.airport_system.addInsertTextField
+import ru.nsu.group20211.airport_system.addPickParamInternet
+import ru.nsu.group20211.airport_system.addPickParamNoInternet
+import ru.nsu.group20211.airport_system.addSlider
 import ru.nsu.group20211.airport_system.addUpdateButton
 import ru.nsu.group20211.airport_system.addUpdatePickField
 import ru.nsu.group20211.airport_system.addUpdateTextField
@@ -27,12 +34,15 @@ import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.plane.models.AircraftRepairReport
 import ru.nsu.group20211.airport_system.domain.plane.models.Plane
 import ru.nsu.group20211.airport_system.getTimestampFrom
+import ru.nsu.group20211.airport_system.presentation.DbFilter
 import ru.nsu.group20211.airport_system.presentation.SpaceItemDecorator
+import ru.nsu.group20211.airport_system.setItems
 import ru.nsu.group20211.airportsystem.R
 import ru.nsu.group20211.airportsystem.databinding.BottomDialogBinding
 import ru.nsu.group20211.airportsystem.databinding.FragmentPlaneBinding
 import ru.nsu.group20211.airportsystem.databinding.SideDialogBinding
-import java.sql.Timestamp
+import ru.nsu.group20211.airportsystem.databinding.SideDialogParametrsInflatorBinding
+import java.sql.Date
 import javax.inject.Inject
 
 class AircraftRepairReportFragment : Fragment() {
@@ -116,7 +126,7 @@ class AircraftRepairReportFragment : Fragment() {
                 "Brigade",
                 { report.repairTeam = it.customGetId() },
                 suspend { model.getBrigades() } to
-                        { (it as Brigade).nameBrigade}),
+                        { (it as Brigade).nameBrigade }),
         )
     }
 
@@ -146,7 +156,7 @@ class AircraftRepairReportFragment : Fragment() {
                 "Brigade" to (report.brigade?.nameBrigade ?: "Unknown"),
                 { newReport.repairTeam = it.customGetId() },
                 suspend { model.getBrigades() } to
-                        { (it as Brigade).nameBrigade}),
+                        { (it as Brigade).nameBrigade }),
 
             )
     }
@@ -164,12 +174,105 @@ class AircraftRepairReportFragment : Fragment() {
             .show()
     }
 
+    private fun generateSidePickSort(): List<Pair<String, String>> {
+        return listOf(
+            "None" to "None",
+            "Plane" to "plane",
+            "Repair team" to "repairTeam",
+            "Date repair" to "dateRepair",
+            "Report" to "report",
+        )
+    }
+
+    private fun generateSidePickParams(filter: DbFilter): List<Triple<String, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>, (DbEntity?) -> Unit>> {
+        return listOf()
+    }
+
+    private fun generateSidePickParamNoInternet(filter: DbFilter): List<Triple<String, List<String>, (String?) -> Unit>> {
+        return listOf()
+    }
+
+    private fun generateSlide(filter: DbFilter): List<Triple<String, suspend () -> Pair<Float, Float>, (Float, Float) -> Unit>> {
+        return listOf()
+    }
+
     private fun openSideDialog() {
         SideSheetDialog(requireContext()).apply {
             val dialog = SideDialogBinding.inflate(LayoutInflater.from(requireContext()))
             setContentView(dialog.root)
+            val filter = DbFilter()
+
+            // Sort
+            val fieldName = generateSidePickSort()
+            dialog.layoutExposed.isVisible = true
+            dialog.textExposed.isVisible = true
+            dialog.layoutExposed.hint = "Sort by"
+            dialog.textExposed.setText("None")
+            dialog.textExposed.setItems(fieldName.map { item -> item.first }.toTypedArray())
+            dialog.textExposed.setOnItemClickListener { parent, view, position, id ->
+                filter.nameFieldSort = fieldName[id.toInt()].second
+            }
+            dialog.materialCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                filter.desc = isChecked
+            }
+            dialog.paramsContainer.addView(
+                SideDialogParametrsInflatorBinding.inflate(
+                    LayoutInflater.from(context)
+                ).also {
+                    with(it) {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            val min = Date(model.getMinDate().time)
+                            val max = Date(model.getMaxDate().time)
+                            withContext(Dispatchers.Main) {
+                                seekBar.setValues(min.time.toFloat(), max.time.toFloat())
+                                seekBar.isVisible = true
+                                seekBar.valueFrom = min.time.toFloat()
+                                seekBar.valueTo = max.time.toFloat()
+                            }
+                            seekBar.setLabelFormatter { value ->
+                                Date(value.toLong()).toString()
+                            }
+                        }
+                        this.fieldName.isVisible = true
+                        this.fieldName.text = "Date"
+                        seekBar.addOnChangeListener { rangeSlider, value, fromUser ->
+                            val min = Date(rangeSlider.values.first().toLong()).toString()
+                            val max = Date(rangeSlider.values.last().toLong()).toString()
+                            filter.queryMap[0] =
+                                """ "aircraftRepairReports"."dateRepair" >= TO_DATE('$min', 'YYYY-MM-DD') AND "aircraftRepairReports"."dateRepair" <= TO_DATE('$max', 'YYYY-MM-DD') """
+                        }
+                    }
+                }.root
+            )
+            //Slide
+            dialog.paramsContainer.addSlider(
+                requireContext(),
+                generateSlide(filter),
+                lifecycleScope
+            )
+
+            //PickWithInternet
+            dialog.paramsContainer.addPickParamInternet(
+                requireContext(),
+                generateSidePickParams(filter),
+                lifecycleScope
+            )
+
+            // PircNoInternet
+            dialog.paramsContainer.addPickParamNoInternet(
+                requireContext(),
+                generateSidePickParamNoInternet(filter)
+            )
+
+
+            dialog.button.setOnClickListener {
+                val (listCond, listOrder) = filter.generateQuery()
+                model.getData(listCond, listOrder)
+                dismiss()
+            }
         }.show()
     }
+
 
     private fun openBottomDialogUpdate(report: AircraftRepairReport) {
         BottomSheetDialog(requireContext()).apply {

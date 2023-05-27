@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
@@ -18,13 +19,18 @@ import kotlinx.coroutines.flow.onEach
 import ru.nsu.group20211.airport_system.addInsertButton
 import ru.nsu.group20211.airport_system.addInsertPickField
 import ru.nsu.group20211.airport_system.addInsertTextField
+import ru.nsu.group20211.airport_system.addPickParamInternet
+import ru.nsu.group20211.airport_system.addPickParamNoInternet
+import ru.nsu.group20211.airport_system.addSlider
 import ru.nsu.group20211.airport_system.addUpdateButton
 import ru.nsu.group20211.airport_system.addUpdatePickField
 import ru.nsu.group20211.airport_system.addUpdateTextField
 import ru.nsu.group20211.airport_system.appComponent
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.plane.models.ModelPlane
+import ru.nsu.group20211.airport_system.presentation.DbFilter
 import ru.nsu.group20211.airport_system.presentation.SpaceItemDecorator
+import ru.nsu.group20211.airport_system.setItems
 import ru.nsu.group20211.airportsystem.R
 import ru.nsu.group20211.airportsystem.databinding.BottomDialogBinding
 import ru.nsu.group20211.airportsystem.databinding.FragmentPlaneBinding
@@ -133,10 +139,70 @@ class ModelPlaneFragment : Fragment() {
             .show()
     }
 
+    private fun generateSidePickSort(): List<Pair<String, String>> {
+        return listOf(
+            "None" to "None",
+            "Model" to "nameModel",
+        )
+    }
+
+    private fun generateSidePickParams(filter: DbFilter): List<Triple<String, Pair<suspend () -> List<DbEntity>, (DbEntity) -> String>, (DbEntity?) -> Unit>> {
+        return listOf()
+    }
+
+    private fun generateSidePickParamNoInternet(filter: DbFilter): List<Triple<String, List<String>, (String?) -> Unit>> {
+        return listOf()
+    }
+
+    private fun generateSlide(filter: DbFilter): List<Triple<String, suspend () -> Pair<Float, Float>, (Float, Float) -> Unit>> {
+        return listOf()
+    }
+
     private fun openSideDialog() {
         SideSheetDialog(requireContext()).apply {
             val dialog = SideDialogBinding.inflate(LayoutInflater.from(requireContext()))
             setContentView(dialog.root)
+            val filter = DbFilter()
+
+            // Sort
+            val fieldName = generateSidePickSort()
+            dialog.materialCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                filter.desc = isChecked
+            }
+            dialog.layoutExposed.isVisible = true
+            dialog.textExposed.isVisible = true
+            dialog.layoutExposed.hint = "Sort by"
+            dialog.textExposed.setText("None")
+            dialog.textExposed.setItems(fieldName.map { item -> item.first }.toTypedArray())
+            dialog.textExposed.setOnItemClickListener { parent, view, position, id ->
+                filter.nameFieldSort = fieldName[id.toInt()].second
+            }
+            //Slide
+            dialog.paramsContainer.addSlider(
+                requireContext(),
+                generateSlide(filter),
+                lifecycleScope
+            )
+
+            //PickWithInternet
+            dialog.paramsContainer.addPickParamInternet(
+                requireContext(),
+                generateSidePickParams(filter),
+                lifecycleScope
+            )
+
+            // PircNoInternet
+            dialog.paramsContainer.addPickParamNoInternet(
+                requireContext(),
+                generateSidePickParamNoInternet(filter)
+            )
+
+
+            dialog.button.setOnClickListener {
+                val (listCond, listOrder) = filter.generateQuery()
+                model.getData(listCond, listOrder)
+                dismiss()
+            }
         }.show()
     }
 

@@ -4,8 +4,11 @@ import entity.addJoins
 import entity.addOrderBy
 import entity.addWhere
 import entity.log
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import ru.nsu.group20211.airport_system.data.Repository
 import ru.nsu.group20211.airport_system.di.app_module.DatabaseModule
+import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.employee.models.Department
 import ru.nsu.group20211.airport_system.domain.employee.models.Department.Companion.getInstance
 import ru.nsu.group20211.airport_system.domain.employee.models.Employee
@@ -48,6 +51,27 @@ class DepartmentRepository @Inject constructor(
                 department.administrator?.employeeEntity = employee
                 department.administrator?.employeeEntity?.human = human
                 listResult.add(department)
+            }
+        }
+        listResult.forEach {
+            coroutineScope {
+                launch {
+                    launch {
+                        dbContainer.connect().use { connect ->
+                            val result = connect.executeQuery(
+                                """ SELECT count(*) FROM ${Department.getTableName()} 
+                                | RIGHT JOIN ${Brigade.getTableName()} ON (${Brigade.getTableName()}."idDepartment" = ${Department.getTableName()}."id" ) 
+                                | RIGHT JOIN ${Employee.getTableName()} ON (${Employee.getTableName()}."idBrigade" = ${Brigade.getTableName()}."id" ) 
+                                | WHERE ${Department.getTableName()}."id" = ${it.id}""".trimMargin().log()
+                            )
+                            if (result.next()) {
+                                it.countPeople = result.getInt(1)
+                            } else {
+                                it.countPeople = 0
+                            }
+                        }
+                    }
+                }.join()
             }
         }
         return listResult

@@ -15,6 +15,7 @@ import ru.nsu.group20211.airport_system.domain.plane.models.ModelPlane
 import ru.nsu.group20211.airport_system.domain.plane.models.ModelPlane.Companion.getInstance
 import ru.nsu.group20211.airport_system.domain.plane.models.Plane
 import ru.nsu.group20211.airport_system.domain.plane.models.Plane.Companion.getInstance
+import java.sql.Timestamp
 import javax.inject.Inject
 
 class LargeTechnicalInspectionRepository @Inject constructor(
@@ -75,6 +76,30 @@ class LargeTechnicalInspectionRepository @Inject constructor(
                 resultList.add(result.getInstance(clazz = Brigade::class).first)
             }
             resultList
+        }
+    }
+
+    suspend fun getMinDate(): Timestamp {
+        return dbContainer.connect().use {
+            val result =
+                it.executeQuery(""" SELECT MIN("largeTechnicalInspection"."date") FROM "largeTechnicalInspection"""")
+            if (result.next()) {
+                result.getTimestamp(1)
+            } else {
+                Timestamp.valueOf("1999-10-10 00:00:00")
+            }
+        }
+    }
+
+    suspend fun getMaxDate(): Timestamp {
+        return dbContainer.connect().use {
+            val result =
+                it.executeQuery(""" SELECT MAX("largeTechnicalInspection"."date") FROM "largeTechnicalInspection"""")
+            if (result.next()) {
+                result.getTimestamp(1)
+            } else {
+                Timestamp.valueOf("1999-10-10 00:00:00")
+            }
         }
     }
 }

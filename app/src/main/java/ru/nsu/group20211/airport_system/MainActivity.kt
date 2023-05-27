@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
         if (savedInstanceState == null)
-            router.replaceScreen(GlobalNavigation.EmployeeClassScreen())
+            router.replaceScreen(GlobalNavigation.LargeTechnicalInspectionScreen())
         setContentView(R.layout.activity_main)
     }
 

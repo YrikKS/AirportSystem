@@ -56,7 +56,16 @@
             android:layout_marginTop="3dp"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/date_of_creation"
-            tools:text="Brigade: security" />
+            tools:text="number_passenger_seats" />
+
+        <TextView
+            android:id="@+id/count_flight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/number_passenger_seats"
+            tools:text="count_flight" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

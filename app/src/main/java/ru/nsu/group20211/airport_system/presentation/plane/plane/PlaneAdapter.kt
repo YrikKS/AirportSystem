@@ -12,9 +12,7 @@ class PlaneAdapter(var list: List<Plane>, var clickListener: (Plane) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ListItemPlaneBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
@@ -33,6 +31,7 @@ class PlaneAdapter(var list: List<Plane>, var clickListener: (Plane) -> Unit) :
         fun bind(data: Plane) {
             with(binding) {
                 this.namePlane.text = "Name " + data.modelPlane?.nameModel + " " + data.id
+                countFlight.text = "Count flight: " + data.countFlight
                 this.numberPassengerSeats.text =
                     "Number passenger seats " + data.numberPassengerSeats.toString()
                 this.dateOfCreation.text = "Date creation " + data.dateCreation.toString()
