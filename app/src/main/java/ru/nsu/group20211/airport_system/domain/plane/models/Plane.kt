@@ -13,6 +13,7 @@ data class Plane(
     var numberPassengerSeats: Int = 0,
     var dateCreation: Date? = null,
 
+    var countRepair: Int = 0,
     var countFlight: Int = 0,
     var modelPlane: ModelPlane? = null,
 ) : DbEntity {

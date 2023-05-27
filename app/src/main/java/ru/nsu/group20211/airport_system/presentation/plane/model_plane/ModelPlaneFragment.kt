@@ -77,6 +77,7 @@ class ModelPlaneFragment : Fragment() {
         model.stateProvider
             .onEach {
                 adapter.list = it
+                binding.countElements.text = "count: ${it.size}"
                 adapter.notifyDataSetChanged()
             }
             .flowWithLifecycle(lifecycle)

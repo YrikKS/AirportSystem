@@ -35,6 +35,7 @@ class PlaneAdapter(var list: List<Plane>, var clickListener: (Plane) -> Unit) :
                 this.numberPassengerSeats.text =
                     "Number passenger seats " + data.numberPassengerSeats.toString()
                 this.dateOfCreation.text = "Date creation " + data.dateCreation.toString()
+                this.countRepair.text = "Count repair: " + data.countRepair
                 root.setOnClickListener {
                     clickListener(data)
                 }

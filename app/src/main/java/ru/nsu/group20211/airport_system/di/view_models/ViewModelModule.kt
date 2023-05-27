@@ -5,6 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import ru.nsu.group20211.airport_system.presentation.flight.airport.AirportViewModel
+import ru.nsu.group20211.airport_system.presentation.flight.approximate_flight.ApproximateFlightViewModel
+import ru.nsu.group20211.airport_system.presentation.flight.refueling.RefuelingViewModel
+import ru.nsu.group20211.airport_system.presentation.flight.salon_maintenance.SalonMaintenanceViewModel
+import ru.nsu.group20211.airport_system.presentation.flight.technical_inspection.TechnicalInspectionViewModel
+import ru.nsu.group20211.airport_system.presentation.flight.type_fule.TypeFuleViewModel
 import ru.nsu.group20211.airport_system.presentation.plane.Large_technical_inspection.LargeTechnicalInspectionViewModel
 import ru.nsu.group20211.airport_system.presentation.plane.aircraft_repair_report.AircraftRepairReportViewModel
 import ru.nsu.group20211.airport_system.presentation.plane.model_plane.ModelPlaneViewModel
@@ -68,6 +74,36 @@ interface ViewModelBinds {
     @ViewModelKey(PlaneViewModel::class)
     fun bindPlaneViewModel(modelPlaneViewModel: PlaneViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(AirportViewModel::class)
+    fun bindAirportViewModel(viewModel: AirportViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ApproximateFlightViewModel::class)
+    fun bindApproximateFlightViewModel(viewModel: ApproximateFlightViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RefuelingViewModel::class)
+    fun bindRefuelingViewModel(viewModel: RefuelingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SalonMaintenanceViewModel::class)
+    fun bindSalonMaintenanceViewModel(viewModel: SalonMaintenanceViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TechnicalInspectionViewModel::class)
+    fun bindTechnicalInspectionViewModel(viewModel: TechnicalInspectionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TypeFuleViewModel::class)
+    fun bindTypeFuleViewModel(viewModel: TypeFuleViewModel): ViewModel
 
     @Binds
     fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

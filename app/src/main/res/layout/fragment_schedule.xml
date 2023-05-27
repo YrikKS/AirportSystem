@@ -18,7 +18,8 @@
             style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Plane" />
+            android:text="Employee" />
+
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/button_side"
@@ -31,9 +32,8 @@
 
     </com.google.android.material.appbar.MaterialToolbar>
 
-
     <TextView
-        android:id="@+id/count_elements"
+        android:id="@+id/count_schedule"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,24 +42,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialToolbar" />
 
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle_plane"
+        android:id="@+id/recycle_schedule"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/count_elements" />
+        app:layout_constraintTop_toBottomOf="@+id/count_schedule" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_plane"
+        android:id="@+id/floating_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/second_theme_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/recycle_plane"
+        app:layout_constraintEnd_toEndOf="@+id/recycle_schedule"
         app:srcCompat="@drawable/baseline_edit_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

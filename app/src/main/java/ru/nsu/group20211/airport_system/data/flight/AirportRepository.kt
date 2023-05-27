@@ -7,8 +7,9 @@ import ru.nsu.group20211.airport_system.data.Repository
 import ru.nsu.group20211.airport_system.di.app_module.DatabaseModule
 import ru.nsu.group20211.airport_system.domain.flights.models.Airport
 import ru.nsu.group20211.airport_system.domain.flights.models.Airport.Companion.getInstance
+import javax.inject.Inject
 
-class AirportRepository(
+class AirportRepository @Inject constructor(
     override val dbContainer: DatabaseModule.DriverContainer
 ) : Repository<Airport> {
     override suspend fun getAll(listCond: List<String>, listOrder: List<String>): List<Airport> {

@@ -36,18 +36,38 @@ class PlaneRepository @Inject constructor(
         coroutineScope {
             launch {
                 resultList.forEach { plane ->
-                    dbContainer.connect().use {
-                        val result = it.executeQuery(
-                            """ SELECT COUNT(*) AS numberOfTakeoffs
+                    launch {
+                        dbContainer.connect().use {
+                            val result = it.executeQuery(
+                                """ SELECT COUNT(*) AS numberOfTakeoffs
                                     | FROM "planes"
                                     | LEFT JOIN "modelPlane" ON ("modelPlane"."id" = "planes"."model")
                                     | RIGHT JOIN "flightSchedule" ON ("flightSchedule"."plane" = "planes"."id") 
                                     | WHERE "planes"."id" = ${plane.id} """.trimMargin().log()
-                        )
-                        if (result.next()) {
-                            plane.countFlight = result.getInt(1)
-                        } else {
-                            plane.countFlight = 0
+                            )
+                            if (result.next()) {
+                                plane.countFlight = result.getInt(1)
+                            } else {
+                                plane.countFlight = 0
+                            }
+                        }
+                    }
+                    launch {
+                        dbContainer.connect().use {
+                            val result = it.executeQuery(
+                                """ SELECT COUNT(*) as "Count inspection"
+                                     | FROM "planes"
+                                     | RIGHT JOIN "largeTechnicalInspection" ON ("largeTechnicalInspection"."idPlane" = "planes"."id")
+                                     | LEFT JOIN "modelPlane" ON ("modelPlane"."id" = "planes"."model")
+                                     | WHERE "largeTechnicalInspection"."idPlane" = ${plane.id} """
+                                    .trimMargin()
+                                    .log()
+                            )
+                            if (result.next()) {
+                                plane.countRepair = result.getInt(1)
+                            } else {
+                                plane.countRepair = 0
+                            }
                         }
                     }
                 }
