@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.presentation.DbFilter
+import ru.nsu.group20211.airportsystem.R
 import ru.nsu.group20211.airportsystem.databinding.DialogInflatorBinding
 import ru.nsu.group20211.airportsystem.databinding.SideDialogParametrsInflatorBinding
 import java.sql.Date
@@ -99,6 +100,13 @@ fun LinearLayoutCompat.addInsertPickFieldFromList(
                 it.layoutExposed.isVisible = true
                 it.layoutExposed.hint = data.first
                 val listItems = data.third
+//                (it.textExposed as? MaterialAutoCompleteTextView)?.setAdapter(
+//                    ArrayAdapter(
+//                        context,
+//                        R.layout.list_item_exposed_text,
+//                        listItems.toTypedArray()
+//                    )
+//                )
                 it.textExposed.setItems(listItems.toTypedArray())
                 it.textExposed.setOnItemClickListener { parent, view, position, id ->
                     data.second(listItems[id.toInt()])

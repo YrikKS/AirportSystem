@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.domain.flights.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
@@ -16,7 +16,7 @@ data class Refueling(
     var refilledLiters: Float = 0.0F,
     var date: Timestamp? = null,
 
-    var tupeFule: TypeFule? = null,
+    var tupeFule: TypeFuel? = null,
     var refuelingBrigade : Brigade? = null,
     var schedule: FlightSchedule? = null
 ) : DbEntity {
@@ -28,10 +28,10 @@ data class Refueling(
     override fun insertQuery(): String {
         return buildString {
             if (date != null) {
-                append("""INSERT INTO ${getTableName()} ("idFlight", "typeFuel", "idRefuelingTeam", "refilledLiters", "date") """)
+                append("""INSERT INTO ${getTableName()} ("idFlight", "typeFule", "idRefuelingTeam", "refilledLiters", "date") """)
                 append("""  VALUES($idFlight, $typeFuel, $idRefuelingTeam, $refilledLiters, TO_TIMESTAMP('$date', 'YYYY-MM-DD HH24:MI:SS.FF')) """)
             } else {
-                append("""INSERT INTO ${getTableName()} ("idFlight", "typeFuel", "idRefuelingTeam", "refilledLiters") """)
+                append("""INSERT INTO ${getTableName()} ("idFlight", "typeFule", "idRefuelingTeam", "refilledLiters") """)
                 append("""  VALUES($idFlight, $typeFuel, $idRefuelingTeam, $refilledLiters) """)
             }
         }

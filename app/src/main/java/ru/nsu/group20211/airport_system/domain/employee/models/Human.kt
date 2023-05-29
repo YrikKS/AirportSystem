@@ -1,8 +1,8 @@
 package ru.nsu.group20211.airport_system.domain.employee.models
 
 import android.os.Parcelable
-import entity.addQuo
 import kotlinx.parcelize.Parcelize
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import java.sql.Date
@@ -41,18 +41,18 @@ data class Human(
     override fun insertQuery() = buildString {
         append("INSERT INTO ${getTableName()} ")
         append(""" ("name", "surname",  """)
-        if (patronymic != null) {
-            append(""" patronymic", "sex",  """)
+        if (patronymic != null && patronymic!!.isNotEmpty() && patronymic != "null") {
+            append(""" "patronymic", "sex",  """)
         } else {
             append(""" "sex",  """)
         }
         if (dateOfBirth != null) {
-            append(""""" dateOfBirth", "countChildren") VALUES (""")
+            append(""" "dateOfBirth", "countChildren") VALUES (""")
         } else {
-            append(""""" "countChildren") VALUES (""")
+            append(""" "countChildren") VALUES (""")
         }
         append(""" '${name}', '${surname}',  """)
-        if (patronymic != null) {
+        if (patronymic != null && patronymic!!.isNotEmpty() && patronymic != "null") {
             append(""" '${patronymic}', '${sex}',   """)
         } else {
             append(""" '${sex}',  """)

@@ -1,14 +1,14 @@
 package ru.nsu.group20211.airport_system.domain.flights.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import java.sql.ResultSet
 import kotlin.reflect.KClass
 
-data class TypeFule(
-    val id: Int = 0,
-    val name: String = "",
+data class TypeFuel(
+    var id: Int = 0,
+    var name: String = "",
 ) : DbEntity {
     override fun customGetId(): Int {
         return id
@@ -23,7 +23,7 @@ data class TypeFule(
     }
 
     override fun updateQuery(): String {
-        return """ UPDATE ${getTableName()} SET "name" = '$name' WHERE id = $id """
+        return """ UPDATE ${getTableName()} SET "name" = '$name' WHERE "id" = $id """
     }
 
     override fun myEquals(other: Any): Boolean {
@@ -31,7 +31,7 @@ data class TypeFule(
     }
 
 
-    companion object : DbEntityCompanion<TypeFule> {
+    companion object : DbEntityCompanion<TypeFuel> {
         override fun getTableName(): String {
             return "typeFule".addQuo()
         }
@@ -42,9 +42,9 @@ data class TypeFule(
 
         override fun ResultSet.getInstance(
             indexStart: Int,
-            clazz: KClass<TypeFule>
-        ): Pair<TypeFule, Int> {
-            return TypeFule(
+            clazz: KClass<TypeFuel>
+        ): Pair<TypeFuel, Int> {
+            return TypeFuel(
                 id = getInt(indexStart),
                 name = getString(indexStart + 1)
             ) to indexStart + 2

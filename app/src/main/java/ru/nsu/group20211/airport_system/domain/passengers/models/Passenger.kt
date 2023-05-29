@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.domain.passengers.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import java.sql.Date
@@ -15,6 +15,16 @@ data class Passenger(
     var patronymic: String? = null,
     var dateOfBirth: Date? = null
 ) : DbEntity {
+
+    fun getFIO(): String {
+        return buildString {
+            append("$surname ")
+            append("$name ")
+            if (patronymic != null && patronymic != "null")
+                append("$patronymic ")
+        }
+    }
+
     override fun customGetId(): Int {
         return id
     }

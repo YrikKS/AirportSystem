@@ -1,11 +1,11 @@
-package entity
+package ru.nsu.group20211.airport_system.data
 
 import android.util.Log
 
 fun String.addQuo() = "\"$this\""
 
 fun String.log(): String {
-    Log.i("SQL: ", this)
+    Log.i("SQL: ", "SQL: $this")
     return this
 }
 

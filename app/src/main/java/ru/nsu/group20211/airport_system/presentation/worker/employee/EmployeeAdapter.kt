@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.nsu.group20211.airport_system.domain.employee.models.Employee
 import ru.nsu.group20211.airportsystem.databinding.ListItemEmployeeBinding
 
-class EmployeeAdapter(var list: List<Employee>, var cliclListner: (Employee) -> Unit) :
+class EmployeeAdapter(var list: List<Employee>, var clickListener: (Employee) -> Unit) :
     RecyclerView.Adapter<EmployeeAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,7 +38,7 @@ class EmployeeAdapter(var list: List<Employee>, var cliclListner: (Employee) -> 
                 nameHuman.text =
                     "Worker: " + data.human!!.getFIO()
                 root.setOnClickListener {
-                    cliclListner(data)
+                    clickListener(data)
                 }
             }
         }

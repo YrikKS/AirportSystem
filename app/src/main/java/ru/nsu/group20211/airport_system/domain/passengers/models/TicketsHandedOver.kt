@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.domain.passengers.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import ru.nsu.group20211.airport_system.domain.flights.models.FlightSchedule

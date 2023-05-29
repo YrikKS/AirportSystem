@@ -1,9 +1,9 @@
 package ru.nsu.group20211.airport_system.data.plane
 
-import entity.addJoins
-import entity.addOrderBy
-import entity.addWhere
-import entity.log
+import ru.nsu.group20211.airport_system.data.addJoins
+import ru.nsu.group20211.airport_system.data.addOrderBy
+import ru.nsu.group20211.airport_system.data.addWhere
+import ru.nsu.group20211.airport_system.data.log
 import ru.nsu.group20211.airport_system.data.Repository
 import ru.nsu.group20211.airport_system.di.app_module.DatabaseModule
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
@@ -14,7 +14,6 @@ import ru.nsu.group20211.airport_system.domain.plane.models.ModelPlane
 import ru.nsu.group20211.airport_system.domain.plane.models.ModelPlane.Companion.getInstance
 import ru.nsu.group20211.airport_system.domain.plane.models.Plane
 import ru.nsu.group20211.airport_system.domain.plane.models.Plane.Companion.getInstance
-import java.sql.Date
 import java.sql.Timestamp
 import javax.inject.Inject
 

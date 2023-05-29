@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.domain.flights.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
@@ -10,20 +10,22 @@ import java.sql.Timestamp
 import kotlin.reflect.KClass
 
 data class FlightSchedule(
-    var id: Int,
-    var plane: Int,
-    var typeFlight: Int,
-    var status: Int,
-    var brigadePilots: Int,
-    var brigadeWorker: Int,
-    var idApproximateFlights: Int?,
-    var idDepartureAirport: Int?,
-    var idArrivalAirport: Int?,
-    var takeoffTime: Timestamp?,
-    var boardingTime: Timestamp?,
-    var price: Float,
-    var minNumberTickets: Int,
+    var id: Int = 0,
+    var plane: Int = 0,
+    var typeFlight: Int = 0,
+    var status: Int = 0,
+    var brigadePilots: Int = 0,
+    var brigadeWorker: Int = 0,
+    var idApproximateFlights: Int? = null,
+    var idDepartureAirport: Int? = null,
+    var idArrivalAirport: Int? = null,
+    var takeoffTime: Timestamp? = null,
+    var boardingTime: Timestamp? = null,
+    var price: Float = 0F,
+    var minNumberTickets: Int = 0,
 
+    var noNeedTickets: Int = 0,
+    var procentNoNeedTickets: Float = 0F,
     var departure: Airport? = null,
     var arrival: Airport? = null,
     var approximateFlight: ApproximateFlight? = null,
@@ -31,6 +33,13 @@ data class FlightSchedule(
     var pilots: Brigade? = null,
     var workers: Brigade? = null
 ) : DbEntity {
+
+    fun getSchedule(): String {
+        return buildString {
+            append(""" ${arrival?.airportName ?: ""} at ${takeoffTime.toString()}""")
+        }
+    }
+
     override fun customGetId(): Int {
         return id
     }
@@ -39,16 +48,16 @@ data class FlightSchedule(
         return buildString {
             append(""" INSERT INTO ${getTableName()} ("plane", "typeFlight", "status", "brigadePilots", "brigadeWorker" """)
             if (idApproximateFlights != null)
-                append(""", idApproximateFlights """)
+                append(""", "idApproximateFlights" """)
             if (idDepartureAirport != null)
-                append(""", idDepartureAirport """)
+                append(""", "idDepartureAirport" """)
             if (idArrivalAirport != null)
-                append(""", idArrivalAirport  """)
+                append(""", "idArrivalAirport"  """)
             if (takeoffTime != null)
-                append(""", takeoffTime """)
+                append(""", "takeoffTime" """)
             if (boardingTime != null)
-                append(""", boardingTime """)
-            append(""", price, minNumberTickets) VALUES (""")
+                append(""", "boardingTime" """)
+            append(""", "price", "minNumberTickets") VALUES (""")
             append(""" $plane, $typeFlight, $status, $brigadePilots, $brigadeWorker """)
 
             if (idApproximateFlights != null)
@@ -90,7 +99,7 @@ data class FlightSchedule(
                 append(""", "boardingTime" = TO_TIMESTAMP('$boardingTime', 'YYYY-MM-DD HH24:MI:SS.FF') """)
             append(""", "price" = $price """)
             append(""", "minNumberTickets" = $minNumberTickets """)
-            append(""" WHERE id = $id """)
+            append(""" WHERE "id" = $id """)
         }
     }
 

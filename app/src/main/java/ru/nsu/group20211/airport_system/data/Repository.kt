@@ -1,6 +1,5 @@
 package ru.nsu.group20211.airport_system.data
 
-import entity.log
 import ru.nsu.group20211.airport_system.di.app_module.DatabaseModule
 import ru.nsu.group20211.airport_system.domain.DbEntity
 

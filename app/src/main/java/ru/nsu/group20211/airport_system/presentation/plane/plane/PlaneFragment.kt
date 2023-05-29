@@ -27,8 +27,6 @@ import ru.nsu.group20211.airport_system.addUpdatePickField
 import ru.nsu.group20211.airport_system.addUpdateTextField
 import ru.nsu.group20211.airport_system.appComponent
 import ru.nsu.group20211.airport_system.domain.DbEntity
-import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
-import ru.nsu.group20211.airport_system.domain.employee.models.Department
 import ru.nsu.group20211.airport_system.domain.plane.models.ModelPlane
 import ru.nsu.group20211.airport_system.domain.plane.models.Plane
 import ru.nsu.group20211.airport_system.getTimeFrom
@@ -259,18 +257,18 @@ class PlaneFragment : Fragment() {
         BottomSheetDialog(requireContext()).apply {
             val dialog = BottomDialogBinding.inflate(LayoutInflater.from(requireContext()))
             setContentView(dialog.root)
-            val newReport = Plane()
+            val newPLane = Plane()
             dialog.bottomLayout.addInsertTextField(
-                generateInitTextField(newReport),
+                generateInitTextField(newPLane),
                 requireContext()
             )
             dialog.bottomLayout.addInsertPickField(
-                generateInitPickField(newReport),
+                generateInitPickField(newPLane),
                 lifecycleScope,
                 requireContext()
             )
             dialog.bottomLayout.addInsertButton(context) {
-                model.insert(newReport)
+                model.insert(newPLane)
                 dismiss()
             }
         }.show()

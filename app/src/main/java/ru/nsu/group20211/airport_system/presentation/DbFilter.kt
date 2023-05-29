@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.presentation
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 
 
 class DbFilter(

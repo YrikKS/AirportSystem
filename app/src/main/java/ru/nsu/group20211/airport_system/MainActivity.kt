@@ -7,6 +7,7 @@ import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import ru.nsu.group20211.airport_system.presentation.GlobalNavigation
 import ru.nsu.group20211.airportsystem.R
+import ru.nsu.group20211.airportsystem.databinding.ActivityMainBinding
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
 
-
+    private lateinit var binding: ActivityMainBinding
     private val navigator by lazy {
         AppNavigator(
             this,
@@ -28,10 +29,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         appComponent.inject(this)
+
         if (savedInstanceState == null)
-            router.replaceScreen(GlobalNavigation.PlaneScreen())
-        setContentView(R.layout.activity_main)
+            router.replaceScreen(GlobalNavigation.EmployeeMainScreen())
+        setupUi()
+        setContentView(binding.root)
     }
 
 
@@ -43,6 +47,42 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         navigatorHolder.removeNavigator()
         super.onPause()
+    }
+
+    private fun setupUi() {
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.menu_action_employees -> {
+                    router.newRootScreen(
+                        GlobalNavigation.EmployeeMainScreen()
+                    )
+                    true
+                }
+
+                R.id.menu_action_plane -> {
+                    router.newRootScreen(
+                        GlobalNavigation.PlanesMainScreen()
+                    )
+                    true
+                }
+
+                R.id.menu_action_schedule -> {
+                    router.newRootScreen(
+                        GlobalNavigation.ScheduleMainScreen()
+                    )
+                    true
+                }
+
+                R.id.menu_action_ticket -> {
+                    router.newRootScreen(
+                        GlobalNavigation.TicketMainScreen()
+                    )
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
 }

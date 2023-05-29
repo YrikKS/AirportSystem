@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.domain.flights.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import java.sql.ResultSet
@@ -8,16 +8,24 @@ import java.sql.Timestamp
 import kotlin.reflect.KClass
 
 data class ApproximateFlight(
-    var id: Int,
-    var idDepartureAirport: Int,
-    var idArrivalAirport: Int,
+    var id: Int = 0,
+    var idDepartureAirport: Int = 0,
+    var idArrivalAirport: Int = 0,
     var frequencyInDays: Int = 1,
     var approximateTakeoffTime: Timestamp? = null,
-    var approximatePrice: Float,
+    var approximatePrice: Float = 0F,
 
-    var departureAirport : Airport? = null,
-    var arrivalAirport : Airport? = null,
+    var departureAirport: Airport? = null,
+    var arrivalAirport: Airport? = null,
 ) : DbEntity {
+    fun getTime() = buildString {
+        append(approximateTakeoffTime!!.hours.toString())
+        append(":")
+        append(approximateTakeoffTime!!.minutes.toString())
+        append(":")
+        append(approximateTakeoffTime!!.seconds.toString())
+    }
+
     override fun customGetId(): Int {
         return id
     }
@@ -25,9 +33,19 @@ data class ApproximateFlight(
     override fun insertQuery(): String {
         return buildString {
             append(""" INSERT INTO ${getTableName()} ("idDepartureAirport",  """)
-            append(""" "idArrivalAirport", "frequencyInDays", "approximateTakeoffTime", "approximatePrice") """)
+
+            if (approximateTakeoffTime != null) {
+                append(""" "idArrivalAirport", "frequencyInDays", "approximateTakeoffTime", "approximatePrice") """)
+            } else {
+                append(""" "idArrivalAirport", "frequencyInDays", "approximatePrice") """)
+            }
+
             append(""" VALUES ($idDepartureAirport, $idArrivalAirport, $frequencyInDays,  """)
-            append(""" TO_TIMESTAMP('$approximateTakeoffTime', 'YYYY-MM-DD HH24:MI:SS.FF'), $approximatePrice) """)
+            if (approximateTakeoffTime != null) {
+                append(""" TO_TIMESTAMP('$approximateTakeoffTime', 'YYYY-MM-DD HH24:MI:SS.FF'), $approximatePrice) """)
+            } else {
+                append(""" $approximatePrice) """)
+            }
         }
     }
 
@@ -41,7 +59,8 @@ data class ApproximateFlight(
             append(""" "idDepartureAirport" = $idDepartureAirport, """)
             append(""" "idArrivalAirport" = $idArrivalAirport, """)
             append(""" "frequencyInDays" = $frequencyInDays, """)
-            append(""" "approximateTakeoffTime" = TO_TIMESTAMP('$approximateTakeoffTime', 'YYYY-MM-DD HH24:MI:SS.FF'), """)
+            if (approximateTakeoffTime != null)
+                append(""" "approximateTakeoffTime" = TO_TIMESTAMP('$approximateTakeoffTime', 'YYYY-MM-DD HH24:MI:SS.FF'), """)
             append(""" "approximatePrice" = $approximatePrice """)
             append(""" WHERE "id" = $id """)
         }
@@ -53,7 +72,7 @@ data class ApproximateFlight(
 
     companion object : DbEntityCompanion<ApproximateFlight> {
         override fun getTableName(): String {
-            return "approximateFlight".addQuo()
+            return "approximateFlights".addQuo()
         }
 
         override fun getAll(): String {

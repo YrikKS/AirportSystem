@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.domain.passengers.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import ru.nsu.group20211.airport_system.domain.flights.models.FlightSchedule
@@ -15,6 +15,7 @@ data class Ticket(
     var realPrice: Float = 0.0F,
     var registrationTime: Timestamp? = null,
     var luggage: Char = 'N',
+    var place: Int = 0,
 
     var passengerEntity: Passenger? = null,
     var schedule: FlightSchedule? = null
@@ -26,9 +27,9 @@ data class Ticket(
     override fun insertQuery(): String {
         return buildString {
             append(""" INSERT INTO ${getTableName()} """)
-            append(""" ("passenger", "idFlight", "realPrice", "registrationTime", "luggage") """)
+            append(""" ("passenger", "idFlight", "realPrice(in rubles)", "luggage", "place") """)
             append(""" VALUES """)
-            append(""" ($passenger, $idFlight, $realPrice, TO_TIMESTAMP('$registrationTime', 'YYYY-MM-DD HH24:MI:SS.FF'), '$luggage') """)
+            append(""" ($passenger, $idFlight, $realPrice, '$luggage', '$place') """)
         }
     }
 
@@ -41,9 +42,10 @@ data class Ticket(
             append(""" UPDATE ${getTableName()} SET """)
             append(""" "passenger" = $passenger, """)
             append(""" "idFlight" = $idFlight, """)
-            append(""" "realPrice" = $realPrice, """)
+            append(""" "realPrice(in rubles)" = $realPrice, """)
             append(""" "registrationTime" = TO_TIMESTAMP('$registrationTime', 'YYYY-MM-DD HH24:MI:SS.FF'), """)
-            append(""" "luggage" = '$luggage' """)
+            append(""" "luggage" = '$luggage', """)
+            append(""" "place" = '$place' """)
             append(""" WHERE "id" = $id """)
         }
     }
@@ -72,7 +74,8 @@ data class Ticket(
                 realPrice = getFloat(indexStart + 3),
                 registrationTime = getTimestamp(indexStart + 4),
                 luggage = getString(indexStart + 5)[0],
-            ) to indexStart + 6
+                place = getInt(indexStart + 6)
+            ) to indexStart + 7
         }
     }
 }

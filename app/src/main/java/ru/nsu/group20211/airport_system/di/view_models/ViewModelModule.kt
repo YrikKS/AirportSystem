@@ -7,14 +7,17 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import ru.nsu.group20211.airport_system.presentation.flight.airport.AirportViewModel
 import ru.nsu.group20211.airport_system.presentation.flight.approximate_flight.ApproximateFlightViewModel
+import ru.nsu.group20211.airport_system.presentation.flight.flight_schedule.FlightScheduleViewModel
 import ru.nsu.group20211.airport_system.presentation.flight.refueling.RefuelingViewModel
 import ru.nsu.group20211.airport_system.presentation.flight.salon_maintenance.SalonMaintenanceViewModel
 import ru.nsu.group20211.airport_system.presentation.flight.technical_inspection.TechnicalInspectionViewModel
-import ru.nsu.group20211.airport_system.presentation.flight.type_fule.TypeFuleViewModel
+import ru.nsu.group20211.airport_system.presentation.flight.type_fule.TypeFuelViewModel
 import ru.nsu.group20211.airport_system.presentation.plane.Large_technical_inspection.LargeTechnicalInspectionViewModel
 import ru.nsu.group20211.airport_system.presentation.plane.aircraft_repair_report.AircraftRepairReportViewModel
 import ru.nsu.group20211.airport_system.presentation.plane.model_plane.ModelPlaneViewModel
 import ru.nsu.group20211.airport_system.presentation.plane.plane.PlaneViewModel
+import ru.nsu.group20211.airport_system.presentation.tickets.passengers.PassengerViewModel
+import ru.nsu.group20211.airport_system.presentation.tickets.tickets.TicketsViewModel
 import ru.nsu.group20211.airport_system.presentation.worker.brigades.BrigadeViewModel
 import ru.nsu.group20211.airport_system.presentation.worker.department.DepartmentViewModel
 import ru.nsu.group20211.airport_system.presentation.worker.employee.EmployeeViewModel
@@ -102,8 +105,24 @@ interface ViewModelBinds {
 
     @Binds
     @IntoMap
-    @ViewModelKey(TypeFuleViewModel::class)
-    fun bindTypeFuleViewModel(viewModel: TypeFuleViewModel): ViewModel
+    @ViewModelKey(TypeFuelViewModel::class)
+    fun bindTypeFuleViewModel(viewModel: TypeFuelViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlightScheduleViewModel::class)
+    fun bindFlightScheduleViewModel(viewModel: FlightScheduleViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PassengerViewModel::class)
+    fun bindPassengerViewModel(viewModel: PassengerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TicketsViewModel::class)
+    fun bindTicketsViewModel(viewModel: TicketsViewModel): ViewModel
+
 
     @Binds
     fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

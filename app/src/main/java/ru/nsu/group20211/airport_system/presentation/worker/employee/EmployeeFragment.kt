@@ -206,11 +206,11 @@ class EmployeeFragment : Fragment() {
                 "Experience",
                 suspend {
                     model.getMinExperience().toFloat() to model.getMaxExperience().toFloat()
-                },
-                { min, max ->
-                    filter.queryMap[2] =
-                        """ EXTRACT (YEAR FROM SYSDATE) - EXTRACT (YEAR FROM "employees"."dateOfEmployment") BETWEEN '$min' AND '$max' """
-                })
+                }
+            ) { min, max ->
+                filter.queryMap[2] =
+                    """ EXTRACT (YEAR FROM SYSDATE) - EXTRACT (YEAR FROM "employees"."dateOfEmployment") BETWEEN '$min' AND '$max' """
+            }
         )
     }
 

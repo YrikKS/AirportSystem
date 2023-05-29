@@ -1,14 +1,13 @@
 package ru.nsu.group20211.airport_system.data.plane
 
-import entity.addJoins
-import entity.addOrderBy
-import entity.addWhere
-import entity.log
+import ru.nsu.group20211.airport_system.data.addJoins
+import ru.nsu.group20211.airport_system.data.addOrderBy
+import ru.nsu.group20211.airport_system.data.addWhere
+import ru.nsu.group20211.airport_system.data.log
 import ru.nsu.group20211.airport_system.data.Repository
 import ru.nsu.group20211.airport_system.di.app_module.DatabaseModule
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade.Companion.getInstance
-import ru.nsu.group20211.airport_system.domain.plane.models.AircraftRepairReport
 import ru.nsu.group20211.airport_system.domain.plane.models.LargeTechnicalInspection
 import ru.nsu.group20211.airport_system.domain.plane.models.LargeTechnicalInspection.Companion.getInstance
 import ru.nsu.group20211.airport_system.domain.plane.models.ModelPlane

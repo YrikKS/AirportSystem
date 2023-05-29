@@ -24,7 +24,6 @@ import ru.nsu.group20211.airport_system.addPickParamNoInternet
 import ru.nsu.group20211.airport_system.addSlider
 import ru.nsu.group20211.airport_system.appComponent
 import ru.nsu.group20211.airport_system.domain.DbEntity
-import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.employee.models.Human
 import ru.nsu.group20211.airport_system.domain.employee.models.human
 import ru.nsu.group20211.airport_system.presentation.DbFilter
@@ -250,7 +249,9 @@ class HumanFragment : Fragment() {
                                 when (key) {
                                     "Name" -> newHuman.name = view.text.toString()
                                     "Surname" -> newHuman.surname = view.text.toString()
-                                    "Pyrtonymic" -> newHuman.patronymic = (view.text ?: "").toString()
+                                    "Pyrtonymic" -> newHuman.patronymic =
+                                        (view.text ?: "").toString()
+
                                     "Count children" -> newHuman.countChildren =
                                         view.text.toString().toInt()
 
@@ -335,7 +336,9 @@ class HumanFragment : Fragment() {
                                 when (key) {
                                     "Name" -> newHuman.name = view.text.toString()
                                     "Surname" -> newHuman.surname = view.text.toString()
-                                    "Patronymic" -> newHuman.patronymic = (view.text ?: "").toString()
+                                    "Patronymic" -> newHuman.patronymic =
+                                        (view.text ?: "").toString()
+
                                     "Count children" -> newHuman.countChildren =
                                         view.text.toString().toInt()
 

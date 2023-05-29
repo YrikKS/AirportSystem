@@ -14,11 +14,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.sidesheet.SideSheetDialog
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.nsu.group20211.airport_system.addInsertButton
 import ru.nsu.group20211.airport_system.addInsertPickField
 import ru.nsu.group20211.airport_system.addInsertTextField
@@ -76,18 +73,11 @@ class BrigadeFragment : Fragment() {
         binding.buttonSide.setOnClickListener {
             openSideDialog()
         }
-        lifecycleScope.launch(Dispatchers.IO) {
-            val res = model.getCount()
-            withContext(Dispatchers.Main) {
-                binding.title.text = "Brigades    count: $res"
-            }
-        }
 
         model.stateProvider
             .onEach {
                 adapter.list = it
-                if (it.isNotEmpty())
-                    binding.title.text = "Brigades    count: ${it.size}"
+                binding.countElements.text = "count: ${it.size}"
                 adapter.notifyDataSetChanged()
             }
             .flowWithLifecycle(lifecycle)

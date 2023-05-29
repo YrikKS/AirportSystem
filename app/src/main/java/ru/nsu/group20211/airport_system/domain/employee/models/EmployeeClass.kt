@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.domain.employee.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import ru.nsu.group20211.airport_system.domain.employee.models.EmployeeClass.Administrator.Companion.getInstance
@@ -253,7 +253,7 @@ sealed class EmployeeClass : DbEntity {
             is Cashiers -> append("""("employee", "numberLanguages") VALUES (""")
             is Dispatchers -> append("""("employee, "numberLanguages") VALUES (""")
             is Other -> append("""("employee", "typeWorker") VALUES (""")
-            is Pilots -> append("""("employee", "licenseCategory", "rating") VALUES (""")
+            is Pilots -> append("""("employee", "licenseСategory", "rating") VALUES (""")
             is Security -> append("""("employee", "weaponsPermission", "militaryService") VALUES (""")
             is Techniques -> append("""("employee", "qualification") VALUES (""")
         }
@@ -285,7 +285,7 @@ sealed class EmployeeClass : DbEntity {
             is Cashiers -> append(""" "employee" = $employee, "numberLanguages" = '$numberLanguages' """)
             is Dispatchers -> append(""" "employee" = $employee, "numberLanguages" = '$numberLanguages' """)
             is Other -> append(""" "employee" = $employee, "typeWorker" = '$typeWorker' """)
-            is Pilots -> append(""" "employee" = $employee, "licenseCategory" = '$licenseCategory', "rating" = '$rating' """)
+            is Pilots -> append(""" "employee" = $employee, "licenseСategory" = '$licenseCategory', "rating" = '$rating' """)
             is Security -> append(""" "employee" = $employee, "weaponsPermission" = '$weaponsPermission', "militaryService" = '$militaryService' """)
             is Techniques -> append(""" "employee" = $employee, "qualification" = '$qualification' """)
         }

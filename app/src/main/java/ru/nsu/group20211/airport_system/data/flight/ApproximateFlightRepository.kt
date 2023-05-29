@@ -1,16 +1,18 @@
 package ru.nsu.group20211.airport_system.data.flight
 
-import entity.addOrderBy
-import entity.addWhere
-import entity.log
+import ru.nsu.group20211.airport_system.data.addJoins
+import ru.nsu.group20211.airport_system.data.addOrderBy
+import ru.nsu.group20211.airport_system.data.addWhere
+import ru.nsu.group20211.airport_system.data.log
 import ru.nsu.group20211.airport_system.data.Repository
 import ru.nsu.group20211.airport_system.di.app_module.DatabaseModule
 import ru.nsu.group20211.airport_system.domain.flights.models.Airport
 import ru.nsu.group20211.airport_system.domain.flights.models.Airport.Companion.getInstance
 import ru.nsu.group20211.airport_system.domain.flights.models.ApproximateFlight
 import ru.nsu.group20211.airport_system.domain.flights.models.ApproximateFlight.Companion.getInstance
+import javax.inject.Inject
 
-class ApproximateFlightRepository(
+class ApproximateFlightRepository @Inject constructor(
     override val dbContainer: DatabaseModule.DriverContainer
 ) : Repository<ApproximateFlight> {
     override suspend fun getAll(
@@ -24,7 +26,9 @@ class ApproximateFlightRepository(
         )
         dbContainer.connect().use {
             val result = it.executeQuery(
-                (ApproximateFlight.getAll() + addWhere(listCond) + addOrderBy(listOrder)).log()
+                (ApproximateFlight.getAll() + addJoins(listJoins) + addWhere(listCond) + addOrderBy(
+                    listOrder
+                )).log()
             )
             while (result.next()) {
                 val (schedule, index) = result.getInstance(clazz = ApproximateFlight::class)

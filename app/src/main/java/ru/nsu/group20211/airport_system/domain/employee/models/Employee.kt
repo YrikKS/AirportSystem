@@ -1,6 +1,6 @@
 package ru.nsu.group20211.airport_system.domain.employee.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import java.sql.Date
@@ -28,8 +28,17 @@ data class Employee(
 
     override fun insertQuery() = buildString {
         append("INSERT INTO ${getTableName()} ")
-        append("""("idHuman", "idBrigade", "dateOfEmployment", "salary") VALUES (""")
-        append("""$humanId, $idBrigade, TO_DATE('${dateOfEmployment}', 'YYYY-MM-DD'), $salary)""")
+        if (dateOfEmployment != null) {
+            append("""("idHuman", "idBrigade", "dateOfEmployment", "salary") VALUES (""")
+        } else {
+            append("""("idHuman", "idBrigade", "salary") VALUES (""")
+        }
+        if (dateOfEmployment != null) {
+            append("""$humanId, $idBrigade, TO_DATE('${dateOfEmployment}', 'YYYY-MM-DD'), $salary)""")
+        } else {
+            append("""$humanId, $idBrigade, $salary)""")
+        }
+
     }
 
     override fun deleteQuery() = buildString {
@@ -44,7 +53,8 @@ data class Employee(
         append("employees".addQuo())
         append(" SET ")
         append(""" "idBrigade" = $idBrigade,  """)
-        append(""" "dateOfEmployment" = TO_DATE('$dateOfEmployment', 'YYYY-MM-DD'),  """)
+        if (dateOfEmployment != null)
+            append(""" "dateOfEmployment" = TO_DATE('$dateOfEmployment', 'YYYY-MM-DD'),  """)
         append(""" "idHuman" = $humanId,  """)
         append(""" "salary" = $salary  """)
         append(""" WHERE "id" = $id """)

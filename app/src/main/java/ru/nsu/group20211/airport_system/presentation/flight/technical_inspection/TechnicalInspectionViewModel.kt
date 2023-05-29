@@ -2,8 +2,10 @@ package ru.nsu.group20211.airport_system.presentation.flight.technical_inspectio
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import ru.nsu.group20211.airport_system.data.employee.BrigadeRepository
 import ru.nsu.group20211.airport_system.data.flight.FlightScheduleRepository
 import ru.nsu.group20211.airport_system.data.flight.TechnicalInspectionRepository
+import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
 import ru.nsu.group20211.airport_system.domain.flights.models.FlightSchedule
 import ru.nsu.group20211.airport_system.domain.flights.models.TechnicalInspection
 import ru.nsu.group20211.airport_system.presentation.BaseDbViewModel
@@ -12,7 +14,8 @@ import javax.inject.Inject
 
 class TechnicalInspectionViewModel @Inject constructor(
     override val repository: TechnicalInspectionRepository,
-    private val flightScheduleRepository: FlightScheduleRepository
+    private val flightScheduleRepository: FlightScheduleRepository,
+    private val brigadesRepository: BrigadeRepository
 ) : BaseDbViewModel<TechnicalInspection>() {
     override val stateProvider = MutableStateFlow<List<TechnicalInspection>>(emptyList())
     override val errorProvider = MutableSharedFlow<Throwable>()
@@ -20,6 +23,16 @@ class TechnicalInspectionViewModel @Inject constructor(
     suspend fun getSchedule(): List<FlightSchedule> {
         return runCatchingNonCancellation {
             flightScheduleRepository.getAll()
+        }.getOrElse {
+            it.printStackTrace()
+            errorProvider.emit(it)
+            emptyList()
+        }
+    }
+
+    suspend fun getBrigades(): List<Brigade> {
+        return runCatchingNonCancellation {
+            brigadesRepository.getAll()
         }.getOrElse {
             it.printStackTrace()
             errorProvider.emit(it)

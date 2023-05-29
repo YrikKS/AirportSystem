@@ -1,9 +1,9 @@
 package ru.nsu.group20211.airport_system.data.flight
 
-import entity.addJoins
-import entity.addOrderBy
-import entity.addWhere
-import entity.log
+import ru.nsu.group20211.airport_system.data.addJoins
+import ru.nsu.group20211.airport_system.data.addOrderBy
+import ru.nsu.group20211.airport_system.data.addWhere
+import ru.nsu.group20211.airport_system.data.log
 import ru.nsu.group20211.airport_system.data.Repository
 import ru.nsu.group20211.airport_system.di.app_module.DatabaseModule
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
@@ -12,8 +12,9 @@ import ru.nsu.group20211.airport_system.domain.flights.models.FlightSchedule
 import ru.nsu.group20211.airport_system.domain.flights.models.FlightSchedule.Companion.getInstance
 import ru.nsu.group20211.airport_system.domain.flights.models.SalonMaintenance
 import ru.nsu.group20211.airport_system.domain.flights.models.SalonMaintenance.Companion.getInstance
+import javax.inject.Inject
 
-class SalonMaintenanceRepository(
+class SalonMaintenanceRepository @Inject constructor(
     override val dbContainer: DatabaseModule.DriverContainer
 ) : Repository<SalonMaintenance> {
     override suspend fun getAll(

@@ -1,9 +1,9 @@
 package ru.nsu.group20211.airport_system.data.employee
 
-import entity.addJoins
-import entity.addOrderBy
-import entity.addWhere
-import entity.log
+import ru.nsu.group20211.airport_system.data.addJoins
+import ru.nsu.group20211.airport_system.data.addOrderBy
+import ru.nsu.group20211.airport_system.data.addWhere
+import ru.nsu.group20211.airport_system.data.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

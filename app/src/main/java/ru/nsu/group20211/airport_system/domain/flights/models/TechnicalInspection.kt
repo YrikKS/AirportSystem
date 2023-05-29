@@ -1,10 +1,9 @@
 package ru.nsu.group20211.airport_system.domain.flights.models
 
-import entity.addQuo
+import ru.nsu.group20211.airport_system.data.addQuo
 import ru.nsu.group20211.airport_system.domain.DbEntity
 import ru.nsu.group20211.airport_system.domain.DbEntityCompanion
 import ru.nsu.group20211.airport_system.domain.employee.models.Brigade
-import ru.nsu.group20211.airport_system.domain.plane.models.Plane
 import java.sql.ResultSet
 import java.sql.Timestamp
 import kotlin.reflect.KClass
