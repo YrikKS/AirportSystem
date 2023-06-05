@@ -52,6 +52,7 @@ data class Brigade(
         }
 
         override fun getAll(): String {
+            """SELECT ID, NAME FROM ${getTableName()} """
             return super.getAll()
         }
 

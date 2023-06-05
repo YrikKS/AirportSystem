@@ -106,7 +106,7 @@ class EmployeeFragment : Fragment() {
 
     private fun generateInitTextField(employee: Employee): List<Pair<String, (String) -> Unit>> {
         return listOf("Salary" to { employee.salary = it.toFloatOrNull() ?: 0.0F },
-            "Date of employment" to {
+            "Date of employment (yyyy-mm-dd)" to {
                 employee.dateOfEmployment = try {
                     Date.valueOf(it)
                 } catch (ex: Exception) {
@@ -132,7 +132,7 @@ class EmployeeFragment : Fragment() {
         return listOf(("Salary" to employee.salary.toString()) to {
             newEmployee.salary = it.toFloatOrNull() ?: 0.0F
         },
-            ("Date of employment" to employee.dateOfEmployment.toString()) to {
+            ("Date of employment (yyyy-mm-dd)" to employee.dateOfEmployment.toString()) to {
                 newEmployee.dateOfEmployment = Date.valueOf(it)
             })
     }

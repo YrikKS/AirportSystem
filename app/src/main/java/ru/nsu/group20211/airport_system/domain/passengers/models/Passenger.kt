@@ -31,8 +31,19 @@ data class Passenger(
 
     override fun insertQuery(): String {
         return buildString {
-            append(""" INSERT INTO ${getTableName()} ("sex", "name", "surname", "patronymic", "dateOfBirth") """)
-            append(""" VALUES ('$sex', '$name', '$surname', '$patronymic', TO_DATE('$dateOfBirth', 'YYYY-MM-DD')); """)
+            if (patronymic != null && patronymic!!.isNotEmpty()) {
+                append(""" INSERT INTO ${getTableName()} ("sex", "name", "surname", "patronymic", "dateOfBirth") """)
+            } else {
+                append(""" INSERT INTO ${getTableName()} ("sex", "name", "surname", "dateOfBirth") """)
+            }
+
+            if (patronymic != null && patronymic!!.isNotEmpty()) {
+                append(""" VALUES ('$sex', '$name', '$surname', '$patronymic', TO_DATE('$dateOfBirth', 'YYYY-MM-DD'))""")
+            } else {
+                append(""" VALUES ('$sex', '$name', '$surname', TO_DATE('$dateOfBirth', 'YYYY-MM-DD')) """)
+            }
+
+
         }
     }
 

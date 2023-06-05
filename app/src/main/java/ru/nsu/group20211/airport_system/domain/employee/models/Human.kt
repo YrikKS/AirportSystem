@@ -58,7 +58,7 @@ data class Human(
             append(""" '${sex}',  """)
         }
         if (dateOfBirth != null) {
-            append(""" TO_DATE('${dateOfBirth}', 'YYYY-MM-DD'), """)
+            append(""" TO_DATE('${dateOfBirth}', 'YYYY-MM-DD'), ${countChildren}) """)
         } else {
             append("""${countChildren})""")
         }

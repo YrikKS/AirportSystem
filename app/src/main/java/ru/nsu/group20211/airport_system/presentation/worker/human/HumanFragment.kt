@@ -206,7 +206,7 @@ class HumanFragment : Fragment() {
                 "Surname" to human.surname,
                 "Patronymic" to human.patronymic,
                 "Count children" to human.countChildren.toString(),
-                "Date of birth" to human.dateOfBirth.toString()
+                "Date of birth (yyyy-mm-dd)" to human.dateOfBirth.toString()
             ).forEach { data ->
                 dialog.bottomLayout.addView(
                     DialogInflatorBinding.inflate(
@@ -255,7 +255,7 @@ class HumanFragment : Fragment() {
                                     "Count children" -> newHuman.countChildren =
                                         view.text.toString().toInt()
 
-                                    "Date of birth" -> {
+                                    "Date of birth (yyyy-mm-dd)" -> {
                                         newHuman.dateOfBirth = try {
                                             val format = "yyyy-MM-dd"
                                             val formater = SimpleDateFormat(format)
@@ -295,7 +295,7 @@ class HumanFragment : Fragment() {
                 "Surname",
                 "Patronymic",
                 "Count children",
-                "Date of birth"
+                "Date of birth (yyyy-mm-dd)"
             ).forEach { text ->
                 dialog.bottomLayout.addView(
                     DialogInflatorBinding.inflate(
@@ -342,8 +342,14 @@ class HumanFragment : Fragment() {
                                     "Count children" -> newHuman.countChildren =
                                         view.text.toString().toInt()
 
-                                    "Date of birth" -> {
+                                    "Date of birth (yyyy-mm-dd)" -> {
                                         newHuman.dateOfBirth = try {
+                                            val format = "yyyy-MM-dd"
+                                            val formater = SimpleDateFormat(format)
+                                            Date(formater.parse(view.text.toString()).time)
+                                        } catch (ex: Exception) {
+                                            null
+                                        } ?: try {
                                             val format = "dd.MM.yyyy"
                                             val formater = SimpleDateFormat(format)
                                             Date(formater.parse(view.text.toString()).time)
